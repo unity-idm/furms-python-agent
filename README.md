@@ -28,12 +28,6 @@ python3 setup.py bdist_wheel
 pip3 install dist/furms-1.0.0-py3-none-any.whl
 ```
 
-## Generate Documentation
-```
-pdoc --html furms
-firefox html/furms/index.html
-```
-
 
 # Running demo agent
 The demo agent has been developed on top of the `furms` library and can be found in `demo-agent` directory.
@@ -52,6 +46,7 @@ If aforementioned variables are not present a default values takes place:
 * user - guest
 * cafile - ./ca_certificate.pem
 ```
+source furms-agent-venv/bin/activate
 cd demo-agent
 ./demo-agent.sh <site-id-from-furms-ui>
 ```
