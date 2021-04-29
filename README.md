@@ -46,7 +46,7 @@ If aforementioned variables are not present a default values takes place:
 * user - guest
 * cafile - ./ca_certificate.pem
 ```
-source furms-agent-venv/bin/activate
+source furms-agent-venv/bin/activate # skip it if you already activated virtual env
 cd demo-agent
 ./demo-agent.sh <site-id-from-furms-ui>
 ```
