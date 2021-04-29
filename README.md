@@ -1,4 +1,4 @@
-# Preparation of virtual environemnt for demo agent
+# Preparation of virtual environment for demo agent
 
 ## Create virtual environment if not already
 ```
