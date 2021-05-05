@@ -3,14 +3,7 @@
 # See LICENSE file for licensing information.
 
 from typing import Callable
-from furms.furms_messages import UserSSHKeyAddRequest
-from furms.furms_messages import UserSSHKeyAddResult
-from furms.furms_messages import UserSSHKeyRemovalRequest
-from furms.furms_messages import UserSSHKeyRemovalResult
-from furms.furms_messages import UserSSHKeyUpdatingRequest
-from furms.furms_messages import UserSSHKeyUpdateResult
-from furms.furms_messages import AgentPingRequest
-from furms.furms_messages import ProtocolMessage
+from furms.furms_messages import *
 
 """Abstractions to interact with service models."""
 
@@ -62,6 +55,19 @@ class RequestListeners:
     def sshkey_update_listener(self, listener: Callable[[UserSSHKeyUpdatingRequest], UserSSHKeyUpdateResult]):
         self.listeners[UserSSHKeyUpdatingRequest.message_name()] = listener
         return self
+
+    def project_add_listener(self, listener: Callable[[ProjectInstallationRequest], ProjectInstallationResult]):
+        self.listeners[ProjectInstallationRequest.message_name()] = listener
+        return self
+
+    def project_remove_listener(self, listener: Callable[[ProjectRemovalRequest], ProjectRemovalResult]):
+        self.listeners[ProjectRemovalRequest.message_name()] = listener
+        return self
+
+    def project_update_listener(self, listener: Callable[[ProjectUpdateRequest], ProjectUpdateResult]):
+        self.listeners[ProjectUpdateRequest.message_name()] = listener
+        return self
+
 
     def get(self, message: ProtocolMessage):
         return self.listeners.get(message.message_name(), lambda: None)

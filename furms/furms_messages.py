@@ -26,8 +26,18 @@ class ProtocolRequestMessage(ProtocolMessage):
     def ack_message(self): raise NotImplementedError
 
 
+class UserRecord:
+    """
+    Reusable user record. Does not include all defined attributes as their sake is unknown as of now. 
+    """
+    def __init__(self, fenixUserId, firstName, lastName, email):
+        self.fenixUserId = fenixUserId
+        self.firstName = firstName
+        self.lastName = lastName
+        self.email = email
+
 ###################################################
-# SSK keys messages
+# SSH keys messages
 ###################################################
 class UserSSHKeyAddAck(ProtocolMessage):
     def __init__(self) -> None:
@@ -36,7 +46,6 @@ class UserSSHKeyAddAck(ProtocolMessage):
 class UserSSHKeyAddRequest(ProtocolRequestMessage):
     def __init__(self, fenixUserId, publicKey) -> None:
         self.fenixUserId = fenixUserId
-        self.uid = uid
         self.publicKey = publicKey
     def ack_message(self):
         return UserSSHKeyAddAck()
@@ -73,6 +82,67 @@ class UserSSHKeyUpdatingRequest(ProtocolRequestMessage):
         return UserSSHKeyUpdateAck()
 
 class UserSSHKeyUpdateResult(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+###################################################
+# Project provisioning messages
+###################################################
+class ProjectInstallationRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+class ProjectInstallationRequest(ProtocolRequestMessage):
+    def __init__(self, identifier, name, description, acronym, communityId, community, researchField, validityStart, 
+                 validityEnd, projectLeader) -> None:
+        self.identifier = identifier
+        self.name = name
+        self.description = description
+        self.acronym = acronym
+        self.communityId = communityId
+        self.community = community
+        self.researchField = researchField
+        self.validityStart = validityStart
+        self.validityEnd = validityEnd
+        self.projectLeader = projectLeader
+    def ack_message(self):
+        return ProjectInstallationRequestAck()
+
+class ProjectInstallationResult(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+    
+class ProjectRemovalRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+class ProjectRemovalRequest(ProtocolRequestMessage):
+    def __init__(self, identifier) -> None:
+        self.identifier = identifier
+    def ack_message(self):
+        return ProjectRemovalRequestAck()
+
+class ProjectRemovalResult(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+class ProjectUpdateRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+class ProjectUpdateRequest(ProtocolRequestMessage):
+    def __init__(self, identifier, name, description, researchField, validityStart, validityEnd, projectLeader) -> None:
+        self.identifier = identifier
+        self.name = name
+        self.description = description
+        self.researchField = researchField
+        self.validityStart = validityStart
+        self.validityEnd = validityEnd
+        self.projectLeader = projectLeader
+    def ack_message(self):
+        return ProjectUpdateRequestAck()
+
+class ProjectUpdateResult(ProtocolMessage):
     def __init__(self) -> None:
         pass
 

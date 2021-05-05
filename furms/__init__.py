@@ -14,6 +14,12 @@ from furms.furms_messages import UserSSHKeyRemovalResult
 from furms.furms_messages import UserSSHKeyUpdatingRequest
 from furms.furms_messages import UserSSHKeyUpdateResult
 
+from furms.furms_messages import ProjectInstallationRequest
+from furms.furms_messages import ProjectInstallationResult
+from furms.furms_messages import ProjectRemovalRequest
+from furms.furms_messages import ProjectRemovalResult
+from furms.furms_messages import ProjectUpdateRequest
+from furms.furms_messages import ProjectUpdateResult
 
 __author__ = 'Bixbit s.c.'
 __version__ = '1.0.0'
