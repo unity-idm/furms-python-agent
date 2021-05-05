@@ -3,7 +3,6 @@
 # See LICENSE file for licensing information.
 
 import json
-from furms.furms_messages import ProtocolRequestMessage
 from furms.furms_messages import ProtocolMessageFactory
 from furms.furms_messages import ProtocolMessage
 
@@ -31,8 +30,8 @@ class Header:
     def __str__(self) -> str:
         return str(self.to_dict())
 
-class PayloadRequest:
-    def __init__(self, header:Header, body:ProtocolRequestMessage):
+class Payload:
+    def __init__(self, header:Header, body:ProtocolMessage) -> None:
         self.header = header
         if body == None:
             raise Exception("body must not be empty")
@@ -44,19 +43,6 @@ class PayloadRequest:
         header = Header.from_json(data["header"])
         request = ProtocolMessageFactory.from_json(data["body"])
         return cls(header, request)
-
-    def __str__(self) -> str:
-        payload = {}
-        payload['header'] = self.header.to_dict()
-        payload['body'] = self.body.to_dict()
-        return json.dumps(payload, indent=2)
-
-class PayloadResponse:
-    def __init__(self, header:Header, body:ProtocolMessage):
-        self.header = header
-        if body == None:
-            raise Exception("body must not be empty")
-        self.body = body
 
     def to_body(self, indent=0) -> str:
         payload = {}

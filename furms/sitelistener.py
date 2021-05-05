@@ -4,30 +4,36 @@
 import pika
 import logging
 import ssl
-from furms.protocol_messages import PayloadRequest
-from furms.protocol_messages import PayloadResponse
+from furms.protocol_messages import Payload
 from furms.protocol_messages import Header
 from furms.configuration import BrokerConfiguration
 from furms.configuration import RequestListeners
-from furms.furms_messages import AgentPingRequest
-from furms.furms_messages import AgentPingAck
+from furms.configuration import SitePublisher
 from furms.furms_messages import ProtocolMessage
 
 logger = logging.getLogger(__name__)
 
-class SiteListener:
-    def __init__(self, config: BrokerConfiguration, listeners: RequestListeners) -> None:
+class SimipleSitePublisher(SitePublisher):
+    def __init__(self, config: BrokerConfiguration) -> None:
         self.config = config
-        self.listeners = listeners
-
-    def start_consuming(self):
         connection = pika.BlockingConnection(self._connection_params())
-        channel = connection.channel()
+        self.channel = connection.channel()
 
-        channel.basic_consume(self.config.queues.furms_to_site_queue_name(), self.on_message, auto_ack=True)
-        channel.start_consuming()
-    
-    def _connection_params(self):
+    def publish(self, header:Header, message:ProtocolMessage) -> None:
+        payload = Payload(header, message)
+        response_body = payload.to_body()
+        reply_to = self.config.queues.site_to_furms_queue_name()
+        self.channel.basic_publish("", 
+            routing_key=reply_to, 
+            properties=pika.BasicProperties(
+                content_type='application/json', 
+                delivery_mode=2, # make message persistent
+                content_encoding='UTF-8',
+            ),
+            body=response_body)
+        logger.info("response published to %s payload:\n%s" % (reply_to, str(payload)))
+
+    def _connection_params(self) -> pika.ConnectionParameters:
         plain_credentials = pika.credentials.PlainCredentials(self.config.username, self.config.password)
         ssl_options = None
         if self.config.is_ssl_enabled():
@@ -40,54 +46,32 @@ class SiteListener:
             host=self.config.host, 
             port=self.config.port, 
             credentials=plain_credentials, 
-            ssl_options=ssl_options)      
+            ssl_options=ssl_options)   
+
+class SiteListener(SimipleSitePublisher):
+    def __init__(self, config: BrokerConfiguration, listeners: RequestListeners) -> None:
+        SimipleSitePublisher.__init__(self, config)
+        self.listeners = listeners
+
+    def start_consuming(self) -> None:
+        self.channel.basic_consume(self.config.queues.furms_to_site_queue_name(), self.on_message, auto_ack=True)
+        self.channel.start_consuming()    
     
-    def on_message(self, channel, basic_deliver, properties, body):
+    def on_message(self, channel, basic_deliver, properties, body) -> None:
         logger.debug("Received \nbody=%r\nbasic_deliver=%r, \nproperties=%r" % (body, basic_deliver, properties))
 
-        payload = PayloadRequest.from_body(body)
+        payload = Payload.from_body(body)
         logger.info("Received payload:\n%s" % str(payload))
 
-        if isinstance(payload.body, AgentPingRequest):
-            self.handle_ping_request(channel, basic_deliver, payload)
-        else:
-            self.handle_request(channel, basic_deliver, payload)
+        self._handle_request(payload)
 
-    def handle_ping_request(self, channel, basic_deliver, payload:PayloadRequest):
-        pingListener = self.listeners.get(payload.body)
-        pingListener()
-        self.publish(channel, basic_deliver, self._response_header(payload), AgentPingAck())
-
-    def handle_request(self, channel, basic_deliver, payload:PayloadRequest):
-        header = self._response_header(payload)
-        self.publish(channel, basic_deliver, header, payload.body.ack_message())
-
+    def _handle_request(self, payload:Payload) -> None:
         listener = self.listeners.get(payload.body)
         try:
-            result = listener(payload.body)
-            self.publish(channel, basic_deliver, header, result)
+            listener(payload.body, payload.header, self)
         except Exception as e:
-            logger.error("Failed to provide respons to FURMS", e)
+            logger.error("Failed to handle FURMS request", e)
 
 
-    def publish(self, channel, basic_deliver, header:Header, message:ProtocolMessage):
-        response = PayloadResponse(header, message)
-        self._publish(channel, basic_deliver, response)
 
-    def _response_header(self, requestPayload:PayloadRequest, status="OK") -> Header:
-        return Header(requestPayload.header.messageCorrelationId, requestPayload.header.version, status=status)
-
-    def _publish(self, channel, basic_deliver, payload:PayloadResponse):
-        response_body = payload.to_body()
-        reply_to = self.config.queues.site_to_furms_queue_name()
-        channel.basic_publish(basic_deliver.exchange, 
-            routing_key=reply_to, 
-            properties=pika.BasicProperties(
-                content_type='application/json', 
-                delivery_mode=2, # make message persistent
-                content_encoding='UTF-8',
-            ),
-            body=response_body)
-        logger.info("response published to %s payload:\n%s" % (reply_to, str(payload)))
-
-
+ 

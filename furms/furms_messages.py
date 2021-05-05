@@ -1,8 +1,6 @@
 # Copyright (c) 2021 Bixbit s.c. All rights reserved.
 # See LICENSE file for licensing information.
 
-from abc import abstractmethod
-
 """Definition of messages exchanged in payload between FURMS and local site."""
 
 class ProtocolMessage:
@@ -21,10 +19,6 @@ class ProtocolMessage:
     def __str__(self) -> str:
         return str(self.to_dict())
 
-class ProtocolRequestMessage(ProtocolMessage):
-    @abstractmethod
-    def ack_message(self): raise NotImplementedError
-
 
 class UserRecord:
     """
@@ -39,47 +33,41 @@ class UserRecord:
 ###################################################
 # SSH keys messages
 ###################################################
-class UserSSHKeyAddAck(ProtocolMessage):
+class UserSSHKeyAddRequestAck(ProtocolMessage):
     def __init__(self) -> None:
         pass
 
-class UserSSHKeyAddRequest(ProtocolRequestMessage):
+class UserSSHKeyAddRequest(ProtocolMessage):
     def __init__(self, fenixUserId, publicKey) -> None:
         self.fenixUserId = fenixUserId
         self.publicKey = publicKey
-    def ack_message(self):
-        return UserSSHKeyAddAck()
 
 class UserSSHKeyAddResult(ProtocolMessage):
     def __init__(self) -> None:
         pass
     
-class UserSSHKeyRemovalAck(ProtocolMessage):
+class UserSSHKeyRemovalRequestAck(ProtocolMessage):
     def __init__(self) -> None:
         pass
 
-class UserSSHKeyRemovalRequest(ProtocolRequestMessage):
+class UserSSHKeyRemovalRequest(ProtocolMessage):
     def __init__(self, fenixUserId, publicKey) -> None:
         self.fenixUserId = fenixUserId
         self.publicKey = publicKey
-    def ack_message(self):
-        return UserSSHKeyRemovalAck()
 
 class UserSSHKeyRemovalResult(ProtocolMessage):
     def __init__(self) -> None:
         pass
 
-class UserSSHKeyUpdateAck(ProtocolMessage):
+class UserSSHKeyUpdateRequestAck(ProtocolMessage):
     def __init__(self) -> None:
         pass
 
-class UserSSHKeyUpdatingRequest(ProtocolRequestMessage):
+class UserSSHKeyUpdateRequest(ProtocolMessage):
     def __init__(self, fenixUserId, oldPublicKey, newPublicKey) -> None:
         self.fenixUserId = fenixUserId
         self.oldPublicKey = oldPublicKey
         self.newPublicKey = newPublicKey
-    def ack_message(self):
-        return UserSSHKeyUpdateAck()
 
 class UserSSHKeyUpdateResult(ProtocolMessage):
     def __init__(self) -> None:
@@ -92,7 +80,7 @@ class ProjectInstallationRequestAck(ProtocolMessage):
     def __init__(self) -> None:
         pass
 
-class ProjectInstallationRequest(ProtocolRequestMessage):
+class ProjectInstallationRequest(ProtocolMessage):
     def __init__(self, identifier, name, description, acronym, communityId, community, researchField, validityStart, 
                  validityEnd, projectLeader) -> None:
         self.identifier = identifier
@@ -105,8 +93,6 @@ class ProjectInstallationRequest(ProtocolRequestMessage):
         self.validityStart = validityStart
         self.validityEnd = validityEnd
         self.projectLeader = projectLeader
-    def ack_message(self):
-        return ProjectInstallationRequestAck()
 
 class ProjectInstallationResult(ProtocolMessage):
     def __init__(self) -> None:
@@ -116,11 +102,9 @@ class ProjectRemovalRequestAck(ProtocolMessage):
     def __init__(self) -> None:
         pass
 
-class ProjectRemovalRequest(ProtocolRequestMessage):
+class ProjectRemovalRequest(ProtocolMessage):
     def __init__(self, identifier) -> None:
         self.identifier = identifier
-    def ack_message(self):
-        return ProjectRemovalRequestAck()
 
 class ProjectRemovalResult(ProtocolMessage):
     def __init__(self) -> None:
@@ -130,7 +114,7 @@ class ProjectUpdateRequestAck(ProtocolMessage):
     def __init__(self) -> None:
         pass
 
-class ProjectUpdateRequest(ProtocolRequestMessage):
+class ProjectUpdateRequest(ProtocolMessage):
     def __init__(self, identifier, name, description, researchField, validityStart, validityEnd, projectLeader) -> None:
         self.identifier = identifier
         self.name = name
@@ -139,8 +123,6 @@ class ProjectUpdateRequest(ProtocolRequestMessage):
         self.validityStart = validityStart
         self.validityEnd = validityEnd
         self.projectLeader = projectLeader
-    def ack_message(self):
-        return ProjectUpdateRequestAck()
 
 class ProjectUpdateResult(ProtocolMessage):
     def __init__(self) -> None:
@@ -149,11 +131,9 @@ class ProjectUpdateResult(ProtocolMessage):
 ###################################################
 # Ping messages
 ###################################################
-class AgentPingRequest(ProtocolRequestMessage):
+class AgentPingRequest(ProtocolMessage):
     def __init__(self) -> None:
         pass
-    def ack_message(self):
-        return AgentPingAck()
 
 class AgentPingAck(ProtocolMessage):
     def __init__(self) -> None:

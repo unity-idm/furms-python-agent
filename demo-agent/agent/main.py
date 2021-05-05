@@ -8,6 +8,7 @@ import time
 import furms
 from sshkey_handler import SSHKeyRequestHandler
 from project_handler import ProjectsManagementHandler
+from ping_handler import PingHandler
 
 furms.set_stream_logger('furms.sitelistener', logging.DEBUG)
 furms.set_stream_logger('sshkey_handler', logging.INFO)
@@ -29,7 +30,9 @@ brokerConfig = furms.BrokerConfiguration(
     siteid=sys.argv[1])
 
 listeners = furms.RequestListeners()
-listeners.ping_listener(lambda: time.sleep(2))
+
+ping_handler = PingHandler()
+listeners.ping_listener(ping_handler.handle)
 
 ssh_handler = SSHKeyRequestHandler()
 listeners.sshkey_add_listener(ssh_handler.handle_sshkey_add)

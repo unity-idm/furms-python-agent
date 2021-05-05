@@ -14,22 +14,33 @@ class ProjectsManagementHandler:
     def __init__(self) -> None:
         pass
 
-    def handle_project_add(self, request:furms.ProjectInstallationRequest) -> furms.ProjectInstallationResult:
+    def handle_project_add(self, request:furms.ProjectInstallationRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
         self._logger.info("Project add request: %s" % request)
 
+        headerResponse = self._header_from(header)
+        sitePublisher.publish(headerResponse, furms.ProjectInstallationRequestAck())
 
-        return furms.ProjectInstallationResult()
+        sitePublisher.publish(headerResponse, furms.ProjectInstallationResult())
 
-    def handle_project_remove(self, request:furms.ProjectRemovalRequest) -> furms.ProjectRemovalResult:
+
+    def handle_project_remove(self, request:furms.ProjectRemovalRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
         self._logger.info("Project removal request: %s" % request)
 
+        headerResponse = self._header_from(header)
+        sitePublisher.publish(headerResponse, furms.ProjectRemovalRequestAck())
 
-        return furms.ProjectRemovalResult()
+        sitePublisher.publish(headerResponse, furms.ProjectRemovalResult())
 
-    def handle_project_update(self, request:furms.ProjectUpdateRequest) -> furms.ProjectUpdateResult:
+
+    def handle_project_update(self, request:furms.ProjectUpdateRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
         self._logger.info("Project update request: %s" % request)
 
+        headerResponse = self._header_from(header)
+        sitePublisher.publish(headerResponse, furms.ProjectUpdateRequestAck())
 
-        return furms.ProjectUpdateResult()
+        sitePublisher.publish(headerResponse, furms.ProjectUpdateResult())
 
+
+    def _header_from(self, header:furms.Header):
+        return furms.Header(header.messageCorrelationId, header.version, "OK")
 

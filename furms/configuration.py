@@ -2,10 +2,16 @@
 # Copyright (c) 2021 Bixbit s.c. All rights reserved.
 # See LICENSE file for licensing information.
 
+from abc import abstractmethod
 from typing import Callable
 from furms.furms_messages import *
+from furms.protocol_messages import Header
 
 """Abstractions to interact with service models."""
+
+class SitePublisher:
+    @abstractmethod
+    def publish(self, header:Header, message:ProtocolMessage) -> None: raise NotImplementedError
 
 class Queues:
     """Holds the names of the queues used for communication with FURMS"""
@@ -13,10 +19,10 @@ class Queues:
         self.__site_to_furms = "%s-site-pub" % siteid
         self.__furms_to_site = "%s-furms-pub" % siteid
 
-    def furms_to_site_queue_name(self):
+    def furms_to_site_queue_name(self) -> str:
         return self.__furms_to_site
 
-    def site_to_furms_queue_name(self):
+    def site_to_furms_queue_name(self) -> str:
         return self.__site_to_furms
 
 class BrokerConfiguration:
@@ -33,41 +39,40 @@ class BrokerConfiguration:
         """
         self.cafile = cafile
 
-    def is_ssl_enabled(self):
+    def is_ssl_enabled(self) -> bool:
         return self.cafile != None
 
 class RequestListeners:
     def __init__(self):
         self.listeners = {}
 
-    def ping_listener(self, listener):
+    def ping_listener(self, listener: Callable[[AgentPingRequest, Header, SitePublisher], None]):
         self.listeners[AgentPingRequest.message_name()] = listener
         return self
 
-    def sshkey_add_listener(self, listener: Callable[[UserSSHKeyAddRequest], UserSSHKeyAddResult]):
+    def sshkey_add_listener(self, listener: Callable[[UserSSHKeyAddRequest, Header, SitePublisher], None]):
         self.listeners[UserSSHKeyAddRequest.message_name()] = listener
         return self
 
-    def sshkey_remove_listener(self, listener: Callable[[UserSSHKeyRemovalRequest], UserSSHKeyRemovalResult]):
+    def sshkey_remove_listener(self, listener: Callable[[UserSSHKeyRemovalRequest, Header, SitePublisher], None]):
         self.listeners[UserSSHKeyRemovalRequest.message_name()] = listener
         return self
 
-    def sshkey_update_listener(self, listener: Callable[[UserSSHKeyUpdatingRequest], UserSSHKeyUpdateResult]):
-        self.listeners[UserSSHKeyUpdatingRequest.message_name()] = listener
+    def sshkey_update_listener(self, listener: Callable[[UserSSHKeyUpdateRequest, Header, SitePublisher], None]):
+        self.listeners[UserSSHKeyUpdateRequest.message_name()] = listener
         return self
 
-    def project_add_listener(self, listener: Callable[[ProjectInstallationRequest], ProjectInstallationResult]):
+    def project_add_listener(self, listener: Callable[[ProjectInstallationRequest, Header, SitePublisher], None]):
         self.listeners[ProjectInstallationRequest.message_name()] = listener
         return self
 
-    def project_remove_listener(self, listener: Callable[[ProjectRemovalRequest], ProjectRemovalResult]):
+    def project_remove_listener(self, listener: Callable[[ProjectRemovalRequest, Header, SitePublisher], None]):
         self.listeners[ProjectRemovalRequest.message_name()] = listener
         return self
 
-    def project_update_listener(self, listener: Callable[[ProjectUpdateRequest], ProjectUpdateResult]):
+    def project_update_listener(self, listener: Callable[[ProjectUpdateRequest, Header, SitePublisher], None]):
         self.listeners[ProjectUpdateRequest.message_name()] = listener
         return self
-
 
     def get(self, message: ProtocolMessage):
         return self.listeners.get(message.message_name(), lambda: None)

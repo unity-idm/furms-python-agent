@@ -19,26 +19,40 @@ class SSHKeyRequestHandler:
     def __init__(self) -> None:
         pass
 
-    def handle_sshkey_add(self, request:furms.UserSSHKeyAddRequest) -> furms.UserSSHKeyAddResult:
+    def handle_sshkey_add(self, request:furms.UserSSHKeyAddRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
         self._logger.info("SSH key add request: %s" % request)
+
+        headerResponse = self._header_from(header)
+        sitePublisher.publish(headerResponse, furms.UserSSHKeyAddRequestAck())
 
         UserAuthorizedKeys(request.fenixUserId).add(request.publicKey)
 
-        return furms.UserSSHKeyAddResult()
+        sitePublisher.publish(headerResponse, furms.UserSSHKeyAddResult())
 
-    def handle_sshkey_remove(self, request:furms.UserSSHKeyRemovalRequest) -> furms.UserSSHKeyRemovalResult:
+
+    def handle_sshkey_remove(self, request:furms.UserSSHKeyRemovalRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
         self._logger.info("SSH key removal request: %s" % request)
+
+        headerResponse = self._header_from(header)
+        sitePublisher.publish(headerResponse, furms.UserSSHKeyRemovalRequestAck())
 
         UserAuthorizedKeys(request.fenixUserId).remove(request.publicKey)
 
-        return furms.UserSSHKeyRemovalResult()
+        sitePublisher.publish(headerResponse, furms.UserSSHKeyRemovalResult())
 
-    def handle_sshkey_update(self, request:furms.UserSSHKeyUpdatingRequest) -> furms.UserSSHKeyUpdateResult:
+    def handle_sshkey_update(self, request:furms.UserSSHKeyUpdateRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
         self._logger.info("SSH key update request: %s" % request)
+
+        headerResponse = self._header_from(header)
+        sitePublisher.publish(headerResponse, furms.UserSSHKeyUpdateRequestAck())
 
         UserAuthorizedKeys(request.fenixUserId).update(request.oldPublicKey, request.newPublicKey)
 
-        return furms.UserSSHKeyUpdateResult()
+        sitePublisher.publish(headerResponse, furms.UserSSHKeyUpdateResult())
+
+
+    def _header_from(self, header:furms.Header):
+        return furms.Header(header.messageCorrelationId, header.version, "OK")
 
 class UserAuthorizedKeys:
     _SSH_KEYS_DIR = "ssh_keys"
