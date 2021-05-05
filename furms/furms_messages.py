@@ -34,7 +34,7 @@ class UserSSHKeyAddAck(ProtocolMessage):
         pass
 
 class UserSSHKeyAddRequest(ProtocolRequestMessage):
-    def __init__(self, fenixUserId, uid, publicKey) -> None:
+    def __init__(self, fenixUserId, publicKey) -> None:
         self.fenixUserId = fenixUserId
         self.uid = uid
         self.publicKey = publicKey
@@ -42,44 +42,39 @@ class UserSSHKeyAddRequest(ProtocolRequestMessage):
         return UserSSHKeyAddAck()
 
 class UserSSHKeyAddResult(ProtocolMessage):
-    def __init__(self, fenixUserId, uid) -> None:
-        self.fenixUserId = fenixUserId
-        self.uid = uid
-
+    def __init__(self) -> None:
+        pass
+    
 class UserSSHKeyRemovalAck(ProtocolMessage):
     def __init__(self) -> None:
         pass
 
 class UserSSHKeyRemovalRequest(ProtocolRequestMessage):
-    def __init__(self, fenixUserId, uid, publicKey) -> None:
+    def __init__(self, fenixUserId, publicKey) -> None:
         self.fenixUserId = fenixUserId
-        self.uid = uid
         self.publicKey = publicKey
     def ack_message(self):
         return UserSSHKeyRemovalAck()
 
 class UserSSHKeyRemovalResult(ProtocolMessage):
-    def __init__(self, fenixUserId, uid) -> None:
-        self.fenixUserId = fenixUserId
-        self.uid = uid
+    def __init__(self) -> None:
+        pass
 
 class UserSSHKeyUpdateAck(ProtocolMessage):
     def __init__(self) -> None:
         pass
 
 class UserSSHKeyUpdatingRequest(ProtocolRequestMessage):
-    def __init__(self, fenixUserId, uid, oldPublicKey, newPublicKey) -> None:
+    def __init__(self, fenixUserId, oldPublicKey, newPublicKey) -> None:
         self.fenixUserId = fenixUserId
-        self.uid = uid
         self.oldPublicKey = oldPublicKey
         self.newPublicKey = newPublicKey
     def ack_message(self):
         return UserSSHKeyUpdateAck()
 
 class UserSSHKeyUpdateResult(ProtocolMessage):
-    def __init__(self, fenixUserId, uid) -> None:
-        self.fenixUserId = fenixUserId
-        self.uid = uid
+    def __init__(self) -> None:
+        pass
 
 ###################################################
 # Ping messages

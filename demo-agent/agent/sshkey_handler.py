@@ -24,21 +24,21 @@ class SSHKeyRequestHandler:
 
         UserAuthorizedKeys(request.fenixUserId).add(request.publicKey)
 
-        return furms.UserSSHKeyAddResult(request.fenixUserId, request.uid)
+        return furms.UserSSHKeyAddResult()
 
     def handle_sshkey_remove(self, request:furms.UserSSHKeyRemovalRequest) -> furms.UserSSHKeyRemovalResult:
         self._logger.info("SSH key removal request: %s" % request)
 
         UserAuthorizedKeys(request.fenixUserId).remove(request.publicKey)
 
-        return furms.UserSSHKeyRemovalResult(request.fenixUserId, request.uid)
+        return furms.UserSSHKeyRemovalResult()
 
     def handle_sshkey_update(self, request:furms.UserSSHKeyUpdatingRequest) -> furms.UserSSHKeyUpdateResult:
         self._logger.info("SSH key update request: %s" % request)
 
         UserAuthorizedKeys(request.fenixUserId).update(request.oldPublicKey, request.newPublicKey)
 
-        return furms.UserSSHKeyUpdateResult(request.fenixUserId, request.uid)
+        return furms.UserSSHKeyUpdateResult()
 
 class UserAuthorizedKeys:
     _SSH_KEYS_DIR = "ssh_keys"
@@ -76,3 +76,4 @@ class UserAuthorizedKeys:
             file = open(self._authorized_keys, "r")
             return file.readlines()
         return []
+
