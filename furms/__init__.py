@@ -38,6 +38,15 @@ from furms.furms_messages import ProjectUpdateRequest
 from furms.furms_messages import ProjectUpdateRequestAck
 from furms.furms_messages import ProjectUpdateResult
 
+from furms.furms_messages import ProjectResourceAllocationRequest
+from furms.furms_messages import ProjectResourceAllocationRequestAck
+from furms.furms_messages import ProjectResourceAllocationResult
+
+from furms.furms_messages import ProjectResourceDeallocationRequest
+from furms.furms_messages import ProjectResourceDeallocationRequestAck
+
+
+
 __author__ = 'Bixbit s.c.'
 __version__ = '1.0.0'
 

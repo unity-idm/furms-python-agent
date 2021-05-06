@@ -128,6 +128,45 @@ class ProjectUpdateResult(ProtocolMessage):
     def __init__(self) -> None:
         pass
 
+
+###################################################
+# Project allocation provisioning messages
+###################################################
+class ProjectResourceAllocationRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+class ProjectResourceAllocationRequest(ProtocolMessage):
+    def __init__(self, projectIdentifier, allocationIdentifier, resourceCreditIdentifier, resourceType, amount,
+                 validFrom, validTo) -> None:
+        self.projectIdentifier = projectIdentifier
+        self.allocationIdentifier = allocationIdentifier
+        self.resourceCreditIdentifier = resourceCreditIdentifier
+        self.resourceType = resourceType
+        self.amount = amount
+        self.validFrom = validFrom
+        self.validTo = validTo
+
+class ProjectResourceAllocationResult(ProtocolMessage):
+    def __init__(self, allocationIdentifier, allocationChunkIdentifier, amount, validFrom, validTo) -> None:
+        self.allocationIdentifier = allocationIdentifier
+        self.allocationChunkIdentifier = allocationChunkIdentifier
+        self.amount = amount
+        self.validFrom = validFrom
+        self.validTo = validTo
+    
+class ProjectResourceDeallocationRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+class ProjectResourceDeallocationRequest(ProtocolMessage):
+    def __init__(self, projectIdentifier, allocationIdentifier, resourceCreditIdentifier, resourceType) -> None:
+        self.projectIdentifier = projectIdentifier
+        self.allocationIdentifier = allocationIdentifier
+        self.resourceCreditIdentifier = resourceCreditIdentifier
+        self.resourceType = resourceType
+
+
 ###################################################
 # Ping messages
 ###################################################

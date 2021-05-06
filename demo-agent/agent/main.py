@@ -8,10 +8,13 @@ import time
 import furms
 from sshkey_handler import SSHKeyRequestHandler
 from project_handler import ProjectsManagementHandler
+from allocation_handler import ResourceAllocationHandler
 from ping_handler import PingHandler
 
 furms.set_stream_logger('furms.sitelistener', logging.DEBUG)
 furms.set_stream_logger('sshkey_handler', logging.INFO)
+furms.set_stream_logger('project_handler', logging.INFO)
+furms.set_stream_logger('allocation_handler', logging.INFO)
 
 #########################################################
 # Entry point
@@ -43,6 +46,10 @@ project_handler = ProjectsManagementHandler()
 listeners.project_add_listener(project_handler.handle_project_add)
 listeners.project_remove_listener(project_handler.handle_project_remove)
 listeners.project_update_listener(project_handler.handle_project_update)
+
+allocation_handler = ResourceAllocationHandler()
+listeners.allocation_add_listener(allocation_handler.handle_allocation_add)
+listeners.allocation_remove_listener(allocation_handler.handle_allocation_remove)
 
 try:
     furms.SiteListener(config=brokerConfig, listeners=listeners).start_consuming()
