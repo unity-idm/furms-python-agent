@@ -82,5 +82,13 @@ class RequestListeners:
         self.listeners[ProjectResourceDeallocationRequest.message_name()] = listener
         return self
 
+    def user_add_listener(self, listener: Callable[[UserProjectAddRequest, Header, SitePublisher], None]):
+        self.listeners[UserProjectAddRequest.message_name()] = listener
+        return self
+
+    def user_remove_listener(self, listener: Callable[[UserProjectRemovalRequest, Header, SitePublisher], None]):
+        self.listeners[UserProjectRemovalRequest.message_name()] = listener
+        return self
+
     def get(self, message: ProtocolMessage):
         return self.listeners.get(message.message_name(), lambda: None)

@@ -168,6 +168,36 @@ class ProjectResourceDeallocationRequest(ProtocolMessage):
 
 
 ###################################################
+# User provisioning messages
+###################################################
+class UserProjectAddRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+class UserProjectAddRequest(ProtocolMessage):
+    def __init__(self, user, policiesAcceptance, projectIdentifier) -> None:
+        self.user = user
+        self.policiesAcceptance = policiesAcceptance
+        self.projectIdentifier = projectIdentifier
+
+class UserProjectAddResult(ProtocolMessage):
+    def __init__(self, uid) -> None:
+        self.uid = uid
+    
+class UserProjectRemovalRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+class UserProjectRemovalRequest(ProtocolMessage):
+    def __init__(self, fenixUserId, projectIdentifier) -> None:
+        self.fenixUserId = fenixUserId
+        self.projectIdentifier = projectIdentifier
+
+class UserProjectRemovalResult(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+###################################################
 # Ping messages
 ###################################################
 class AgentPingRequest(ProtocolMessage):

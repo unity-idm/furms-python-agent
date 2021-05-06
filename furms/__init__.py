@@ -45,6 +45,13 @@ from furms.furms_messages import ProjectResourceAllocationResult
 from furms.furms_messages import ProjectResourceDeallocationRequest
 from furms.furms_messages import ProjectResourceDeallocationRequestAck
 
+from furms.furms_messages import UserProjectAddRequest
+from furms.furms_messages import UserProjectAddRequestAck
+from furms.furms_messages import UserProjectAddResult
+
+from furms.furms_messages import UserProjectRemovalRequest
+from furms.furms_messages import UserProjectRemovalRequestAck
+from furms.furms_messages import UserProjectRemovalResult
 
 
 __author__ = 'Bixbit s.c.'
