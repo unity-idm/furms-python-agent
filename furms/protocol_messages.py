@@ -22,6 +22,23 @@ class Header:
         return cls(**data)
 
     def to_dict(self) -> dict:
+        ret = {}
+        ret['version'] = self.version
+        ret['messageCorrelationId'] = self.messageCorrelationId
+        ret['status'] = self.status
+        if self.status == 'FAILED':
+            ret['error'] = self.error.to_dict()
+        return ret
+    
+    def __str__(self) -> str:
+        return str(self.to_dict())
+
+class Error:
+    def __init__(self, code, message):
+        self.code = code
+        self.message = message
+
+    def to_dict(self) -> dict:
         return {
             key:value
             for key, value in self.__dict__.items()

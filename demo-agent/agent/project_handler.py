@@ -17,10 +17,23 @@ class ProjectsManagementHandler:
     def handle_project_add(self, request:furms.ProjectInstallationRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
         self._logger.info("Project add request: %s" % request)
 
-        headerResponse = self._header_from(header)
-        sitePublisher.publish(headerResponse, furms.ProjectInstallationRequestAck())
+        if "bomb" in request.name:
+            headerOKResponse = self._header_from(header)
+            sitePublisher.publish(headerOKResponse, furms.ProjectInstallationRequestAck())
+            
+            headerFailResponse = furms.Header(header.messageCorrelationId, 1, "FAILED", 
+                            furms.Error("security_validation", "Creating bombs is prohibited"))
+            sitePublisher.publish(headerFailResponse, furms.ProjectInstallationResult())
+            
+        elif "nuke" in request.name:
+            headerFailResponse = furms.Header(header.messageCorrelationId, 1, "FAILED", 
+                            furms.Error("security_validation", "Creating nuclear bombs is completely prohibited"))
+            sitePublisher.publish(headerFailResponse, furms.ProjectInstallationRequestAck())
 
-        sitePublisher.publish(headerResponse, furms.ProjectInstallationResult())
+        else:
+            headerResponse = self._header_from(header)
+            sitePublisher.publish(headerResponse, furms.ProjectInstallationRequestAck())
+            sitePublisher.publish(headerResponse, furms.ProjectInstallationResult())
 
 
     def handle_project_remove(self, request:furms.ProjectRemovalRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:

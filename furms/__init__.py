@@ -9,6 +9,7 @@ from furms.configuration import SitePublisher
 from furms.sitelistener import SiteListener
 
 from furms.protocol_messages import Header
+from furms.protocol_messages import Error
 from furms.protocol_messages import Payload
 
 from furms.furms_messages import AgentPingRequest
