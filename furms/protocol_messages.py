@@ -18,6 +18,14 @@ class Header:
         self.error = error
 
     @classmethod
+    def error(cls, messageCorrelationId, errorCode, errorMessage):
+        return Header(messageCorrelationId, 1, 'FAILED', Error(errorCode, errorMessage))
+
+    @classmethod
+    def ok(cls, messageCorrelationId):
+        return Header(messageCorrelationId, 1, 'OK')
+    
+    @classmethod
     def from_json(cls, data: dict):
         return cls(**data)
 

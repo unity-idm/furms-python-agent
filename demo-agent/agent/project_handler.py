@@ -5,55 +5,57 @@ import furms
 import logging
 import os
 from pathlib import Path
+from tinydb import TinyDB, Query
+from furms import Header
 
 class ProjectsManagementHandler:
     """
+    Simplistic projects management: all projects are accepted except of those with bomb and nuke in name.
     """
     _logger = logging.getLogger(__name__)
 
     def __init__(self) -> None:
-        pass
+        self.db = TinyDB('projects.json')
 
     def handle_project_add(self, request:furms.ProjectInstallationRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
-        self._logger.info("Project add request: %s" % request)
 
         if "bomb" in request.name:
-            headerOKResponse = self._header_from(header)
+            headerOKResponse = Header.ok(header.messageCorrelationId)
             sitePublisher.publish(headerOKResponse, furms.ProjectInstallationRequestAck())
             
-            headerFailResponse = furms.Header(header.messageCorrelationId, 1, "FAILED", 
-                            furms.Error("security_validation", "Creating bombs is prohibited"))
+            headerFailResponse = Header.error(header.messageCorrelationId, "security_validation", "Creating bombs is prohibited")
             sitePublisher.publish(headerFailResponse, furms.ProjectInstallationResult())
             
         elif "nuke" in request.name:
-            headerFailResponse = furms.Header(header.messageCorrelationId, 1, "FAILED", 
-                            furms.Error("security_validation", "Creating nuclear bombs is completely prohibited"))
+            headerFailResponse = Header.error(header.messageCorrelationId, "security_validation", "Creating nuclear bombs is completely prohibited")
             sitePublisher.publish(headerFailResponse, furms.ProjectInstallationRequestAck())
 
         else:
-            headerResponse = self._header_from(header)
-            sitePublisher.publish(headerResponse, furms.ProjectInstallationRequestAck())
-            sitePublisher.publish(headerResponse, furms.ProjectInstallationResult())
+            sitePublisher.publish(Header.ok(header.messageCorrelationId), furms.ProjectInstallationRequestAck())
+            
+            self.db.insert({'id' : request.identifier, 'name' : request.name, 'researchField' : request.researchField})
+            sitePublisher.publish(Header.ok(header.messageCorrelationId), furms.ProjectInstallationResult())
+            self._logger.info("Project added, list of all projects: %s" % self.db.all())
 
 
     def handle_project_remove(self, request:furms.ProjectRemovalRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
-        self._logger.info("Project removal request: %s" % request)
-
-        headerResponse = self._header_from(header)
-        sitePublisher.publish(headerResponse, furms.ProjectRemovalRequestAck())
-
-        sitePublisher.publish(headerResponse, furms.ProjectRemovalResult())
+        Project = Query()
+        if not self.db.contains(Project.id == request.identifier):
+            headerResponse = Header.error(header.messageCorrelationId, "unknown_project", "Project not found")
+            sitePublisher.publish(headerResponse, furms.ProjectRemovalResult())
+        else:
+            self.db.remove(Project.id == request.identifier)
+            sitePublisher.publish(Header.ok(header.messageCorrelationId), furms.ProjectRemovalResult())
+            self._logger.info("Project removed, list of all projects: %s" % self.db.all())
 
 
     def handle_project_update(self, request:furms.ProjectUpdateRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
-        self._logger.info("Project update request: %s" % request)
-
-        headerResponse = self._header_from(header)
-        sitePublisher.publish(headerResponse, furms.ProjectUpdateRequestAck())
-
-        sitePublisher.publish(headerResponse, furms.ProjectUpdateResult())
-
-
-    def _header_from(self, header:furms.Header):
-        return furms.Header(header.messageCorrelationId, header.version, "OK")
+        Project = Query()
+        if not self.db.contains(Project.id == request.identifier):
+            headerResponse = Header.error(header.messageCorrelationId, "unknown_project", "Project not found")
+            sitePublisher.publish(headerResponse, furms.ProjectRemovalResult())
+        else:
+            self.db.update({'name' : request.name, 'researchField' : request.researchField}, Project.id == request.identifier)
+            sitePublisher.publish(Header.ok(header.messageCorrelationId), furms.ProjectUpdateResult())
+            self._logger.info("Project updated, list of all projects: %s" % self.db.all())
 
