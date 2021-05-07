@@ -9,3 +9,5 @@ html
 demo-agent/ssh_keys/
 /.pydevproject
 /.project
+demo-agent/dev-demo-agent.sh
+
