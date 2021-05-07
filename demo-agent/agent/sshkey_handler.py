@@ -22,12 +22,38 @@ class SSHKeyRequestHandler:
     def handle_sshkey_add(self, request:furms.UserSSHKeyAddRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
         self._logger.info("SSH key add request: %s" % request)
 
-        headerResponse = self._header_from(header)
-        sitePublisher.publish(headerResponse, furms.UserSSHKeyAddRequestAck())
+        if "fake" in request.publicKey:
+            headerOKResponse = self._header_from(header)
+            sitePublisher.publish(headerOKResponse, furms.UserSSHKeyAddRequestAck())
+            
+            headerFailResponse = furms.Header(header.messageCorrelationId, 1, "FAILED", 
+                            furms.Error("security_validation", "Creating fake keys is prohibited"))
+            sitePublisher.publish(headerFailResponse, furms.UserSSHKeyAddResult())
+            
+        elif "evil" in request.publicKey:
+            headerFailResponse = furms.Header(header.messageCorrelationId, 1, "FAILED", 
+                            furms.Error("security_validation", "Creating evil keys is completely prohibited"))
+            sitePublisher.publish(headerFailResponse, furms.UserSSHKeyAddRequestAck())
 
-        UserAuthorizedKeys(request.fenixUserId).add(request.publicKey)
+        elif "jit" in request.publicKey:
+            headerResponse = self._header_from(header)
+            UserAuthorizedKeys(request.fenixUserId).add(request.publicKey)
+            sitePublisher.publish(headerResponse, furms.UserSSHKeyAddResult())
 
-        sitePublisher.publish(headerResponse, furms.UserSSHKeyAddResult())
+        elif "bug" in request.publicKey:
+            headerResponse = self._header_from(header)
+            UserAuthorizedKeys(request.fenixUserId).add(request.publicKey)
+            sitePublisher.publish(headerResponse, furms.UserSSHKeyAddResult())
+            sitePublisher.publish(headerResponse, furms.UserSSHKeyAddRequestAck())
+
+        else:
+
+            headerResponse = self._header_from(header)
+            sitePublisher.publish(headerResponse, furms.UserSSHKeyAddRequestAck())
+
+            UserAuthorizedKeys(request.fenixUserId).add(request.publicKey)
+
+            sitePublisher.publish(headerResponse, furms.UserSSHKeyAddResult())
 
 
     def handle_sshkey_remove(self, request:furms.UserSSHKeyRemovalRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:

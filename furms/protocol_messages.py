@@ -41,6 +41,7 @@ class Header:
     def __str__(self) -> str:
         return str(self.to_dict())
 
+
 class Error:
     def __init__(self, code, message):
         self.code = code
@@ -52,13 +53,15 @@ class Error:
             for key, value in self.__dict__.items()
             if value is not None
         }
+
     def __str__(self) -> str:
         return str(self.to_dict())
 
+
 class Payload:
-    def __init__(self, header:Header, body:ProtocolMessage) -> None:
+    def __init__(self, header: Header, body: ProtocolMessage) -> None:
         self.header = header
-        if body == None:
+        if body is None:
             raise Exception("body must not be empty")
         self.body = body
 

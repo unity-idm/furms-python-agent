@@ -3,36 +3,48 @@
 
 import furms
 import logging
-import os
-import datetime
-from pathlib import Path
+from furms import Header
+from tinydb import TinyDB, Query
+
 
 class UserInProjectHandler:
     """
+    Simplistic users management: all users are accepted except of those with hacker in name.
     """
     _logger = logging.getLogger(__name__)
 
     def __init__(self) -> None:
-        pass
+        self.db = TinyDB('users.json')
+        self.uidNumber = len(self.db)
 
-    def handle_user_add(self, request:furms.UserProjectAddRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
-        self._logger.info("User added to project request: %s" % request)
+    def handle_user_add(self, request: furms.UserProjectAddRequest, header: furms.Header, sitePublisher: furms.SitePublisher) -> None:
+        User = Query()
+        if self.db.contains((User.fenixIdentifier == request.user['fenixUserId']) & (User.project == request.projectIdentifier)):
+            sitePublisher.publish(Header.error(header.messageCorrelationId, "duplicate_user", "User already present"),
+                                  furms.ProjectRemovalResult())
+            return
+        # we should also check project's existence
 
-        headerResponse = self._header_from(header)
-        sitePublisher.publish(headerResponse, furms.UserProjectAddRequestAck())
-        
-        sitePublisher.publish(headerResponse, furms.UserProjectAddResult('site_user_X01'))
+        if "hacker" in request.user['firstName']:
+            sitePublisher.publish(Header.error(header.messageCorrelationId, "security_validation", "Hackers should use other sites"),
+                                  furms.UserProjectAddRequestAck())
+            return
 
+        uid = "user_" + str(self.uidNumber)
+        self.db.insert({'fenixIdentifier': request.user['fenixUserId'],
+                        'project': request.projectIdentifier,
+                        'name': request.user['firstName'],
+                        'uid': uid})
+        self.uidNumber += 1
+        sitePublisher.publish(Header.ok(header.messageCorrelationId), furms.UserProjectAddResult(uid))
+        self._logger.info("User added to project, all users: %s" % self.db.all())
 
-    def handle_user_remove(self, request:furms.UserProjectRemovalRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
-        self._logger.info("User removal from project request: %s" % request)
-
-        headerResponse = self._header_from(header)
-        sitePublisher.publish(headerResponse, furms.UserProjectRemovalRequestAck())
-
-        sitePublisher.publish(headerResponse, furms.UserProjectRemovalResult())
-
-
-    def _header_from(self, header:furms.Header):
-        return furms.Header(header.messageCorrelationId, header.version, "OK")
-
+    def handle_user_remove(self, request: furms.UserProjectRemovalRequest, header: furms.Header,
+                           sitePublisher: furms.SitePublisher) -> None:
+        User = Query()
+        if not self.db.contains((User.fenixIdentifier == request.fenixUserId) & (User.project == request.projectIdentifier)):
+            sitePublisher.publish(Header.error(header.messageCorrelationId, "unknown_user", "User not found"), furms.ProjectRemovalResult())
+        else:
+            self.db.remove((User.fenixIdentifier == request.fenixUserId) & (User.project == request.projectIdentifier))
+            sitePublisher.publish(Header.ok(header.messageCorrelationId), furms.UserProjectRemovalResult())
+            self._logger.info("User removed from project, all users: %s" % self.db.all())
