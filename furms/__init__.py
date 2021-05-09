@@ -7,6 +7,7 @@ from furms.configuration import BrokerConfiguration
 from furms.configuration import RequestListeners
 from furms.configuration import SitePublisher
 from furms.sitelistener import SiteListener
+from furms.sitelistener import SimipleSitePublisher
 
 from furms.protocol_messages import Header
 from furms.protocol_messages import Error
