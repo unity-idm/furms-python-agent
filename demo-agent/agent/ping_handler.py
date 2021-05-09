@@ -7,7 +7,7 @@ import time
 class PingHandler:
     def handle(self, request:furms.AgentPingRequest, header:furms.Header, sitePublisher:furms.SitePublisher):
         time.sleep(1)
-        headerResponse = furms.Header(header.messageCorrelationId, header.version, "OK")
+        headerResponse = furms.Header.ok(header.messageCorrelationId)
         sitePublisher.publish(headerResponse, furms.AgentPingAck())
 
 
