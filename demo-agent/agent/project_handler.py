@@ -3,9 +3,8 @@
 
 import furms
 import logging
-import os
+from storage import Storage
 import time
-from pathlib import Path
 from tinydb import TinyDB, Query
 from furms import Header
 
@@ -16,8 +15,8 @@ class ProjectsManagementHandler:
     """
     _logger = logging.getLogger(__name__)
 
-    def __init__(self) -> None:
-        self.db = TinyDB('projects.json')
+    def __init__(self, storage: Storage) -> None:
+        self.db = storage.projectsDB
 
     def handle_project_add(self, request: furms.ProjectInstallationRequest, header: furms.Header, sitePublisher: furms.SitePublisher) -> None:
 

@@ -4,7 +4,9 @@
 import furms
 import logging
 import os
+from storage import Storage
 from pathlib import Path
+
 
 class SSHKeyRequestHandler:
     """
@@ -16,8 +18,8 @@ class SSHKeyRequestHandler:
     """
     _logger = logging.getLogger(__name__)
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, storage: Storage) -> None:
+        self.varDir = storage.varDir
 
     def handle_sshkey_add(self, request:furms.UserSSHKeyAddRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
         self._logger.info("SSH key add request: %s" % request)
@@ -37,12 +39,12 @@ class SSHKeyRequestHandler:
 
         elif "jit" in request.publicKey:
             headerResponse = self._header_from(header)
-            UserAuthorizedKeys(request.fenixUserId).add(request.publicKey)
+            UserAuthorizedKeys(request.fenixUserId, self.varDir).add(request.publicKey)
             sitePublisher.publish(headerResponse, furms.UserSSHKeyAddResult())
 
         elif "bug" in request.publicKey:
             headerResponse = self._header_from(header)
-            UserAuthorizedKeys(request.fenixUserId).add(request.publicKey)
+            UserAuthorizedKeys(request.fenixUserId, self.varDir).add(request.publicKey)
             sitePublisher.publish(headerResponse, furms.UserSSHKeyAddResult())
             sitePublisher.publish(headerResponse, furms.UserSSHKeyAddRequestAck())
 
@@ -51,10 +53,9 @@ class SSHKeyRequestHandler:
             headerResponse = self._header_from(header)
             sitePublisher.publish(headerResponse, furms.UserSSHKeyAddRequestAck())
 
-            UserAuthorizedKeys(request.fenixUserId).add(request.publicKey)
+            UserAuthorizedKeys(request.fenixUserId, self.varDir).add(request.publicKey)
 
             sitePublisher.publish(headerResponse, furms.UserSSHKeyAddResult())
-
 
     def handle_sshkey_remove(self, request:furms.UserSSHKeyRemovalRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
         self._logger.info("SSH key removal request: %s" % request)
@@ -62,7 +63,7 @@ class SSHKeyRequestHandler:
         headerResponse = self._header_from(header)
         sitePublisher.publish(headerResponse, furms.UserSSHKeyRemovalRequestAck())
 
-        UserAuthorizedKeys(request.fenixUserId).remove(request.publicKey)
+        UserAuthorizedKeys(request.fenixUserId, self.varDir).remove(request.publicKey)
 
         sitePublisher.publish(headerResponse, furms.UserSSHKeyRemovalResult())
 
@@ -72,20 +73,20 @@ class SSHKeyRequestHandler:
         headerResponse = self._header_from(header)
         sitePublisher.publish(headerResponse, furms.UserSSHKeyUpdateRequestAck())
 
-        UserAuthorizedKeys(request.fenixUserId).update(request.oldPublicKey, request.newPublicKey)
+        UserAuthorizedKeys(request.fenixUserId, self.varDir).update(request.oldPublicKey, request.newPublicKey)
 
         sitePublisher.publish(headerResponse, furms.UserSSHKeyUpdateResult())
 
-
     def _header_from(self, header:furms.Header):
         return furms.Header(header.messageCorrelationId, header.version, "OK")
+
 
 class UserAuthorizedKeys:
     _SSH_KEYS_DIR = "ssh_keys"
     _AUTHORIZED_KEYS = "authorized_keys"
 
-    def __init__(self, fenixUserId) -> None:
-        keys_path = os.path.join(os.getcwd(), self._SSH_KEYS_DIR, fenixUserId)
+    def __init__(self, fenixUserId, varDir) -> None:
+        keys_path = os.path.join(os.getcwd(), varDir, self._SSH_KEYS_DIR, fenixUserId)
         Path(keys_path).mkdir(parents=True, exist_ok=True)
         self._authorized_keys = os.path.join(keys_path, self._AUTHORIZED_KEYS)
 

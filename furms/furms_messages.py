@@ -228,6 +228,53 @@ class UserProjectRemovalResult(ProtocolMessage):
 
 
 ###################################################
+# User allocation access messages
+###################################################
+class UserAllocationGrantAccessRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+
+class UserAllocationGrantAccessRequest(ProtocolMessage):
+    def __init__(self, allocationIdentifier, fenixUserId, projectIdentifier) -> None:
+        self.allocationIdentifier = allocationIdentifier
+        self.fenixUserId = fenixUserId
+        self.projectIdentifier = projectIdentifier
+
+
+class UserAllocationGrantAccessResult(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+    def __eq__(self, other):
+        if not isinstance(other, UserAllocationGrantAccessResult):
+            return NotImplemented
+        return True
+
+
+class UserAllocationBlockAccessRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+
+class UserAllocationBlockAccessRequest(ProtocolMessage):
+    def __init__(self, allocationIdentifier, fenixUserId, projectIdentifier) -> None:
+        self.allocationIdentifier = allocationIdentifier
+        self.fenixUserId = fenixUserId
+        self.projectIdentifier = projectIdentifier
+
+
+class UserAllocationBlockAccessResult(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+    def __eq__(self, other):
+        if not isinstance(other, UserAllocationBlockAccessResult):
+            return NotImplemented
+        return True
+
+
+###################################################
 # Ping messages
 ###################################################
 class AgentPingRequest(ProtocolMessage):

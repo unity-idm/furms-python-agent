@@ -13,7 +13,8 @@ from furms.furms_messages import ProtocolMessage
 
 logger = logging.getLogger(__name__)
 
-class SimipleSitePublisher(SitePublisher):
+
+class SimpleSitePublisher(SitePublisher):
     def __init__(self, config: BrokerConfiguration) -> None:
         self.config = config
         connection = pika.BlockingConnection(self._connection_params())
@@ -48,9 +49,10 @@ class SimipleSitePublisher(SitePublisher):
             credentials=plain_credentials, 
             ssl_options=ssl_options)   
 
-class SiteListener(SimipleSitePublisher):
+
+class SiteListener(SimpleSitePublisher):
     def __init__(self, config: BrokerConfiguration, listeners: RequestListeners) -> None:
-        SimipleSitePublisher.__init__(self, config)
+        SimpleSitePublisher.__init__(self, config)
         self.listeners = listeners
 
     def start_consuming(self) -> None:

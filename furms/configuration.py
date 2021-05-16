@@ -9,9 +9,11 @@ from furms.protocol_messages import Header
 
 """Abstractions to interact with service models."""
 
+
 class SitePublisher:
     @abstractmethod
     def publish(self, header:Header, message:ProtocolMessage) -> None: raise NotImplementedError
+
 
 class Queues:
     """Holds the names of the queues used for communication with FURMS"""
@@ -24,6 +26,7 @@ class Queues:
 
     def site_to_furms_queue_name(self) -> str:
         return self.__site_to_furms
+
 
 class BrokerConfiguration:
     """Holds the information required to connect with broker."""
@@ -41,6 +44,7 @@ class BrokerConfiguration:
 
     def is_ssl_enabled(self) -> bool:
         return self.cafile != None
+
 
 class RequestListeners:
     def __init__(self):
@@ -88,6 +92,14 @@ class RequestListeners:
 
     def user_remove_listener(self, listener: Callable[[UserProjectRemovalRequest, Header, SitePublisher], None]):
         self.listeners[UserProjectRemovalRequest.message_name()] = listener
+        return self
+
+    def user_add_allocation_access_listener(self, listener: Callable[[UserAllocationGrantAccessRequest, Header, SitePublisher], None]):
+        self.listeners[UserAllocationGrantAccessRequest.message_name()] = listener
+        return self
+
+    def user_remove_allocation_access_listener(self, listener: Callable[[UserAllocationBlockAccessRequest, Header, SitePublisher], None]):
+        self.listeners[UserAllocationBlockAccessRequest.message_name()] = listener
         return self
 
     def get(self, message: ProtocolMessage):

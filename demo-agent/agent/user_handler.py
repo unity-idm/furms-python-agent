@@ -3,6 +3,7 @@
 
 import furms
 import logging
+from storage import Storage
 from furms import Header
 from tinydb import TinyDB, Query
 
@@ -13,8 +14,8 @@ class UserInProjectHandler:
     """
     _logger = logging.getLogger(__name__)
 
-    def __init__(self) -> None:
-        self.db = TinyDB('users.json')
+    def __init__(self, storage: Storage) -> None:
+        self.db = storage.usersDB
         self.uidNumber = len(self.db)
 
     def handle_user_add(self, request: furms.UserProjectAddRequest, header: furms.Header, sitePublisher: furms.SitePublisher) -> None:

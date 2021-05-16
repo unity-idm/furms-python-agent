@@ -12,3 +12,4 @@ demo-agent/ssh_keys/
 demo-agent/dev-demo-agent.sh
 
 /rebuild.sh
+/.idea

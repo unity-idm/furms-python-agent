@@ -7,7 +7,7 @@ from furms.configuration import BrokerConfiguration
 from furms.configuration import RequestListeners
 from furms.configuration import SitePublisher
 from furms.sitelistener import SiteListener
-from furms.sitelistener import SimipleSitePublisher
+from furms.sitelistener import SimpleSitePublisher
 
 from furms.protocol_messages import Header
 from furms.protocol_messages import Error
@@ -55,6 +55,13 @@ from furms.furms_messages import UserProjectRemovalRequest
 from furms.furms_messages import UserProjectRemovalRequestAck
 from furms.furms_messages import UserProjectRemovalResult
 
+from furms.furms_messages import UserAllocationGrantAccessRequest
+from furms.furms_messages import UserAllocationGrantAccessRequestAck
+from furms.furms_messages import UserAllocationGrantAccessResult
+
+from furms.furms_messages import UserAllocationBlockAccessRequest
+from furms.furms_messages import UserAllocationBlockAccessRequestAck
+from furms.furms_messages import UserAllocationBlockAccessResult
 
 __author__ = 'Bixbit s.c.'
 __version__ = '1.0.0'
