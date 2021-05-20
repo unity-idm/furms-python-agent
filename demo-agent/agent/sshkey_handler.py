@@ -6,7 +6,7 @@ import logging
 import os
 from storage import Storage
 from pathlib import Path
-
+import time
 
 class SSHKeyRequestHandler:
     """
@@ -70,12 +70,17 @@ class SSHKeyRequestHandler:
     def handle_sshkey_update(self, request:furms.UserSSHKeyUpdateRequest, header:furms.Header, sitePublisher:furms.SitePublisher) -> None:
         self._logger.info("SSH key update request: %s" % request)
 
-        headerResponse = self._header_from(header)
-        sitePublisher.publish(headerResponse, furms.UserSSHKeyUpdateRequestAck())
+        if "evil" in request.newPublicKey:
+            headerFailResponse = furms.Header(header.messageCorrelationId, 1, "FAILED", 
+                            furms.Error("security_validation", "Creating evil keys is completely prohibited"))
+            sitePublisher.publish(headerFailResponse, furms.UserSSHKeyUpdateRequestAck())
+        else:
+            headerResponse = self._header_from(header)
+            sitePublisher.publish(headerResponse, furms.UserSSHKeyUpdateRequestAck())
 
-        UserAuthorizedKeys(request.fenixUserId, self.varDir).update(request.oldPublicKey, request.newPublicKey)
+            UserAuthorizedKeys(request.fenixUserId, self.varDir).update(request.oldPublicKey, request.newPublicKey)
 
-        sitePublisher.publish(headerResponse, furms.UserSSHKeyUpdateResult())
+            sitePublisher.publish(headerResponse, furms.UserSSHKeyUpdateResult())
 
     def _header_from(self, header:furms.Header):
         return furms.Header(header.messageCorrelationId, header.version, "OK")
