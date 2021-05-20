@@ -36,7 +36,7 @@ class UserAllocationAccessHandler:
                                                "Protocol consistency problem: allocation not installed"), UserAllocationGrantAccessResult())
             return
 
-        if "junior" in user[0]['name'] and alloc[0]['amount'] >= 1000:
+        if "junior" in user[0]['name'] and alloc[0]['amount'] > 200:
             sitePublisher.publish(Header.error(header.messageCorrelationId, "allocation__too_big",
                                                "Juniors can't use that big resources"), UserAllocationGrantAccessResult())
             return
