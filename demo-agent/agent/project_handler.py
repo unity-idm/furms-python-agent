@@ -54,7 +54,7 @@ class ProjectsManagementHandler:
         Project = Query()
         if not self.db.contains(Project.id == request.identifier):
             headerResponse = Header.error(header.messageCorrelationId, "unknown_project", "Project not found")
-            sitePublisher.publish(headerResponse, furms.ProjectRemovalResult())
+            sitePublisher.publish(headerResponse, furms.ProjectUpdateResult())
             return
         
         self.db.update({'name' : request.name, 'researchField' : request.researchField}, Project.id == request.identifier)

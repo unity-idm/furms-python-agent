@@ -134,7 +134,7 @@ class ProjectUpdateRequestAck(ProtocolMessage):
 
 
 class ProjectUpdateRequest(ProtocolMessage):
-    def __init__(self, identifier, name, description, researchField, validityStart, validityEnd, projectLeader) -> None:
+    def __init__(self, identifier, name, description, researchField, validityStart, validityEnd, projectLeader, acronym) -> None:
         self.identifier = identifier
         self.name = name
         self.description = description
@@ -142,6 +142,7 @@ class ProjectUpdateRequest(ProtocolMessage):
         self.validityStart = validityStart
         self.validityEnd = validityEnd
         self.projectLeader = projectLeader
+        self.acronym = acronym
 
 
 class ProjectUpdateResult(ProtocolMessage):
