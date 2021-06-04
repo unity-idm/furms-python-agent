@@ -47,6 +47,7 @@ class SimpleSitePublisher(SitePublisher):
             host=self.config.host, 
             port=self.config.port, 
             credentials=plain_credentials, 
+            virtual_host=self.config.virtual_host,
             ssl_options=ssl_options)   
 
 

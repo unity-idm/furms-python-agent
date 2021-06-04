@@ -33,6 +33,7 @@ brokerConfig = furms.BrokerConfiguration(
     port=os.getenv('BROKER_PORT', '44444'), 
     username=os.getenv('BROKER_USERNAME', 'guest'), 
     password=os.getenv('BROKER_PASSWORD', 'guest'), 
+    virtual_host=os.getenv('VIRTUAL_HOST', '/'), 
     cafile=os.getenv('CA_FILE', 'ca_certificate.pem'),
     siteid=siteId)
 

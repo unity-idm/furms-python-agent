@@ -37,6 +37,7 @@ export BROKER_HOST=<broker-host>
 export BROKER_PORT=<broker-port>
 export BROKER_USERNAME=<broker-username>
 export BROKER_PASSWORD=<broker-password>
+export VIRTUAL_HOST=<broker-virtual-hsot>
 export CA_FILE=<path to CA file in PEM format>
 ```
 If aforementioned variables are not present a default values takes place:
@@ -44,6 +45,7 @@ If aforementioned variables are not present a default values takes place:
 * port - 4444
 * password - guest
 * user - guest
+* virtual host - "/"
 * cafile - ./ca_certificate.pem
 ```
 source furms-agent-venv/bin/activate # skip it if you already activated virtual env
