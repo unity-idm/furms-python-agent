@@ -24,7 +24,7 @@ class SimpleSitePublisher(SitePublisher):
         payload = Payload(header, message)
         response_body = payload.to_body()
         reply_to = self.config.queues.site_to_furms_queue_name()
-        self.channel.basic_publish("", 
+        self.channel.basic_publish(self.config.exchange, 
             routing_key=reply_to, 
             properties=pika.BasicProperties(
                 content_type='application/json', 
@@ -32,7 +32,7 @@ class SimpleSitePublisher(SitePublisher):
                 content_encoding='UTF-8',
             ),
             body=response_body)
-        logger.info("response published to %s payload:\n%s" % (reply_to, str(payload)))
+        logger.info("response published to %s (exchange: '%s') payload:\n%s" % (reply_to, self.config.exchange, str(payload)))
 
     def _connection_params(self) -> pika.ConnectionParameters:
         plain_credentials = pika.credentials.PlainCredentials(self.config.username, self.config.password)

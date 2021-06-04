@@ -30,13 +30,14 @@ class Queues:
 
 class BrokerConfiguration:
     """Holds the information required to connect with broker."""
-    def __init__(self, siteid, username, password, host, port, virtual_host="/", cafile=None):
+    def __init__(self, siteid, username, password, host, port, exchange, virtual_host="/", cafile=None):
         self.queues = Queues(siteid)
         self.username = username
         self.password = password
         self.host = host
         self.port = port
         self.virtual_host = virtual_host
+        self.exchange = exchange
         """
         The cafile string, if present, is the path to a file of 
         concatenated CA certificates in PEM format.
