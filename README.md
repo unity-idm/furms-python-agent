@@ -38,7 +38,6 @@ export BROKER_PORT=<broker-port>
 export BROKER_USERNAME=<broker-username>
 export BROKER_PASSWORD=<broker-password>
 export BROKER_VIRTUAL_HOST=<broker-virtual-hsot>
-export BROKER_EXCHANGE=<broker-exchange>
 export CA_FILE=<path to CA file in PEM format>
 ```
 If aforementioned variables are not present a default values takes place:
