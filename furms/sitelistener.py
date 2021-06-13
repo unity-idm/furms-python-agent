@@ -32,7 +32,7 @@ class SimpleSitePublisher(SitePublisher):
                 content_encoding='UTF-8',
             ),
             body=response_body)
-        logger.info("response published to %s (exchange: '%s') payload:\n%s" % (reply_to, self.config.exchange, str(payload)))
+        logger.info("message published to %s (exchange: '%s') payload:\n%s" % (reply_to, self.config.exchange, str(payload)))
 
     def _connection_params(self) -> pika.ConnectionParameters:
         plain_credentials = pika.credentials.PlainCredentials(self.config.username, self.config.password)

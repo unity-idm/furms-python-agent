@@ -12,6 +12,7 @@ from allocation_handler import ResourceAllocationHandler
 from user_handler import UserInProjectHandler
 from ping_handler import PingHandler
 from user_allocation_access_handler import UserAllocationAccessHandler
+from demo_broker_config import DemoBrokerConfiguration
 
 furms.set_stream_logger('furms.sitelistener', logging.DEBUG)
 furms.set_stream_logger('sshkey_handler', logging.INFO)
@@ -26,16 +27,7 @@ if len(sys.argv) != 2:
     print("Provide Site Id as command line parameter.")
     sys.exit(1)
 
-host = os.getenv('BROKER_HOST', '127.0.0.1')
 siteId = sys.argv[1]
-brokerConfig = furms.BrokerConfiguration(
-    host=os.getenv('BROKER_HOST', '127.0.0.1'), 
-    port=os.getenv('BROKER_PORT', '44444'), 
-    username=os.getenv('BROKER_USERNAME', 'guest'), 
-    password=os.getenv('BROKER_PASSWORD', 'guest'), 
-    virtual_host=os.getenv('BROKER_VIRTUAL_HOST', '/'), 
-    cafile=os.getenv('CA_FILE', 'ca_certificate.pem'),
-    siteid=siteId)
 
 listeners = furms.RequestListeners()
 
@@ -66,9 +58,8 @@ user_access_handler = UserAllocationAccessHandler(storage)
 listeners.user_add_allocation_access_listener(user_access_handler.handle_add_user_allocation_access)
 listeners.user_remove_allocation_access_listener(user_access_handler.handle_remove_user_allocation_access)
 
-
-
 try:
+    brokerConfig = DemoBrokerConfiguration(siteId)
     furms.SiteListener(config=brokerConfig, listeners=listeners).start_consuming()
 except KeyboardInterrupt:
     print('Interrupted')

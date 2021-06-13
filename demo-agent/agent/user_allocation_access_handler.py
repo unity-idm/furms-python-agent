@@ -5,7 +5,7 @@ import furms
 import logging
 from storage import Storage
 from furms import Header, UserAllocationGrantAccessResult
-from tinydb import TinyDB, Query
+from tinydb import Query
 
 
 class UserAllocationAccessHandler:

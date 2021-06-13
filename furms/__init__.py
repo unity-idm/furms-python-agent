@@ -63,6 +63,9 @@ from furms.furms_messages import UserAllocationBlockAccessRequest
 from furms.furms_messages import UserAllocationBlockAccessRequestAck
 from furms.furms_messages import UserAllocationBlockAccessResult
 
+from furms.furms_messages import UserResourceUsageRecord
+from furms.furms_messages import CumulativeResourceUsageRecord
+
 __author__ = 'Bixbit s.c.'
 __version__ = '1.0.0'
 

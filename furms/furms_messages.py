@@ -32,6 +32,25 @@ class UserRecord:
         self.lastName = lastName
         self.email = email
 
+###################################################
+# Resource usage records
+###################################################
+class UserResourceUsageRecord(ProtocolMessage):
+    def __init__(self, projectIdentifier, allocationIdentifier, fenixUserId, 
+                cumulativeConsumption, consumedUntil) -> None:
+        self.projectIdentifier = projectIdentifier
+        self.allocationIdentifier = allocationIdentifier
+        self.fenixUserId = fenixUserId  
+        self.cumulativeConsumption = cumulativeConsumption
+        self.consumedUntil = consumedUntil
+
+class CumulativeResourceUsageRecord(ProtocolMessage):
+    def __init__(self, projectIdentifier, allocationIdentifier, 
+                cumulativeConsumption, consumedUntil) -> None:
+        self.projectIdentifier = projectIdentifier
+        self.allocationIdentifier = allocationIdentifier
+        self.cumulativeConsumption = cumulativeConsumption
+        self.consumedUntil = consumedUntil
 
 ###################################################
 # SSH keys messages
