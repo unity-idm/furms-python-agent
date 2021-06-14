@@ -71,7 +71,7 @@ def parse_arguments():
     subparsers = parser.add_subparsers(title='commands', description='available commands', dest='cmd', required=True)
     
     publish_usage = subparsers.add_parser('publish-usage', aliases=['pub'], help='publish usage of records to FURMS')
-    publish_usage.add_argument('-c', '--cumulative-consumption', type=int, help='value how much of an allocation should be reported \
+    publish_usage.add_argument('-c', '--cumulative-consumption', type=float, help='value how much of an allocation should be reported \
         as consumed', required=True)
     publish_usage.add_argument('-a', '--allocation-id', type=str, help='allocation id', required=True)
     publish_usage.add_argument('-u', '--fenix-user-id', type=str, help='if provided then per-user record is sent together \

@@ -46,11 +46,11 @@ class UserResourceUsageRecord(ProtocolMessage):
 
 class CumulativeResourceUsageRecord(ProtocolMessage):
     def __init__(self, projectIdentifier, allocationIdentifier, 
-                cumulativeConsumption, consumedUntil) -> None:
+                cumulativeConsumption, probedAt) -> None:
         self.projectIdentifier = projectIdentifier
         self.allocationIdentifier = allocationIdentifier
         self.cumulativeConsumption = cumulativeConsumption
-        self.consumedUntil = consumedUntil
+        self.probedAt = probedAt
 
 ###################################################
 # SSH keys messages
