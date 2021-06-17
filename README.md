@@ -54,7 +54,7 @@ cd demo-agent
 ./demo-agent.sh <site-id-from-furms-ui>
 ```
 
-## Report consuptoin of allocation
+## Report consumption of allocation
 The demo agent package comes with a separate command line tool to report resource consumption within particular allocation. Optionally you can also provide FENIX user Id to report consumption for given user.
 
 The `report-usage.sh` tool requires site identifier and offers two commands to: 
