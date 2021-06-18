@@ -67,15 +67,18 @@ def list_all_allocations(args):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(prog='report-usage.sh', description='Tool to reports usage of records to FURMS.')
-    parser.add_argument('-s', '--site', metavar='siteId', help="site's identifier", action='store', required=True)
+
+    required_params = parser.add_argument_group('required arguments')
+    required_params.add_argument('-s', '--site', metavar='siteId', help="site's identifier", action='store', required=True)
+
     subparsers = parser.add_subparsers(title='commands', description='available commands', dest='cmd', required=True)
     
     publish_usage = subparsers.add_parser('publish-usage', aliases=['pub'], help='publish usage of records to FURMS')
-    publish_usage.add_argument('-c', '--cumulative-consumption', type=float, help='value how much of an allocation should be reported \
+    publish_usage_required = publish_usage.add_argument_group('required arguments')
+    publish_usage_required.add_argument('-c', '--cumulative-consumption', type=float, help='value how much of an allocation should be reported \
         as consumed', required=True)
-    publish_usage.add_argument('-a', '--allocation-id', type=str, help='allocation id', required=True)
-    publish_usage.add_argument('-u', '--fenix-user-id', type=str, help='if provided then per-user record is sent together \
-        with cumulative allocation data', required=False)
+    publish_usage_required.add_argument('-a', '--allocation-id', type=str, help='allocation id', required=True)
+    publish_usage.add_argument('-u', '--fenix-user-id', type=str, help='when provided then only per-user record is sent', required=False)
     publish_usage.set_defaults(func=publish_usage_to_furms)
 
     list_allocs = subparsers.add_parser('list-allocations', aliases=['list'], help='list of site allocations')

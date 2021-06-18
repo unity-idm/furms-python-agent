@@ -98,12 +98,14 @@ usage: report-usage.sh publish-usage [-h] -c CUMULATIVE_CONSUMPTION -a ALLOCATIO
 
 optional arguments:
   -h, --help            show this help message and exit
+  -u FENIX_USER_ID, --fenix-user-id FENIX_USER_ID
+                        when provided then only per-user record is sent
+
+required arguments:
   -c CUMULATIVE_CONSUMPTION, --cumulative-consumption CUMULATIVE_CONSUMPTION
                         value how much of an allocation should be reported as consumed
   -a ALLOCATION_ID, --allocation-id ALLOCATION_ID
                         allocation id
-  -u FENIX_USER_ID, --fenix-user-id FENIX_USER_ID
-                        if provided then per-user record is sent together with cumulative allocation data
 
 ./report-usage.sh --site SITE_ID publish-usage -c 10 -a a4695995-35ec-4bb8-b38b-a44829ec94e1
 2021-06-14 09:50:14,557 furms.sitelistener [INFO] message published to SITE_ID-site-pub (exchange: 'SITE_ID-site-pub') payload:
