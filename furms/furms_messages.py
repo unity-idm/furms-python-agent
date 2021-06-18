@@ -202,6 +202,13 @@ class ProjectResourceDeallocationRequestAck(ProtocolMessage):
     def __init__(self) -> None:
         pass
 
+class ProjectResourceAllocationUpdate(ProtocolMessage):
+    def __init__(self, allocationIdentifier, allocationChunkIdentifier, amount, validFrom, validTo) -> None:
+        self.allocationIdentifier = allocationIdentifier
+        self.allocationChunkIdentifier = allocationChunkIdentifier
+        self.amount = amount
+        self.validFrom = validFrom
+        self.validTo = validTo
 
 class ProjectResourceDeallocationRequest(ProtocolMessage):
     def __init__(self, projectIdentifier, allocationIdentifier, resourceCreditIdentifier, resourceType) -> None:

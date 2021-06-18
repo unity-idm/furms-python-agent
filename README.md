@@ -67,7 +67,7 @@ This command is used to show all allocations provisioned to given site.
 cd demo-agent
 ./report-usage.sh --site SITE_ID list-allocations
 
-List of all allocations for site with identifier: fzj-x
+List of all allocations for site with identifier: SITE_ID
 [
     {
         "allocationIdentifier": "a4695995-35ec-4bb8-b38b-a44829ec94e1",
@@ -123,4 +123,76 @@ required arguments:
     }
   }
 }
+```
+## Alloation chunk update
+The demo agent package comes with a separate command line tool to update particular allocation chunk.
+
+The `chunk-update.sh` tool requires site identifier and offers two commands to: 
+* list all chunks,
+* push chunk update.
+
+### `list-chunks` command (alias: list)
+This command is used to show all chunks for given site. 
+```
+cd demo-agent
+./chunk-update.sh --site SITE_ID list-chunks
+List of all chunks for site with identifier: SITE_ID
+[
+    {
+        "allocId": "16e51bd3-6cea-4566-9092-619921a3a7b9",
+        "chunkId": 0,
+        "amount": 1001.0,
+        "validFrom": "2020-04-23T03:22:00Z",
+        "validTo": "2028-04-22T03:22:00Z"
+    },
+    {
+        "allocId": "16e51bd3-6cea-4566-9092-619921a3a7b9",
+        "chunkId": 1,
+        "amount": 200.0,
+        "validFrom": "2022-12-17T16:27:00Z",
+        "validTo": "2024-08-12T05:32:00Z"
+    }
+```
+
+### `publish-update` command (alias: pub)
+This option is used to publish chunk update.
+```
+cd demo-agent
+./chunk-update.sh -s SITE_ID publish-update --help
+usage: chunk-update.sh publish-update [-h] -a ALLOCATION_ID -c CHUNK_ID --amount AMOUNT [-f VALID_FROM] [-t VALID_TO]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f VALID_FROM, --valid-from VALID_FROM
+                        when provided then send in a protocol in validFrom field, if not provided then current provisioned value is taken
+  -t VALID_TO, --valid-to VALID_TO
+                        when provided then send in a protocol in validTo field, , if not provided then current provisioned value is taken
+
+required arguments:
+  -a ALLOCATION_ID, --allocation-id ALLOCATION_ID
+                        allocation id
+  -c CHUNK_ID, --chunk-id CHUNK_ID
+                        chunk id
+  --amount AMOUNT       chunk amount to be updated in FURMS
+
+
+./chunk-update.sh -s SITE_ID pub -a 16e51bd3-6cea-4566-9092-619921a3a7b9 -c 0 --amount 1001 -t 2028-04-22T03:22:00Z -f 2020-04-23T03:22:00Z
+2021-06-18 12:06:04,635 furms.sitelistener [INFO] message published to SITE_ID-site-pub (exchange: 'SITE_ID-site-pub') payload:
+{
+  "header": {
+    "version": 1,
+    "messageCorrelationId": null,
+    "status": "OK"
+  },
+  "body": {
+    "ProjectResourceAllocationUpdate": {
+      "allocationIdentifier": "16e51bd3-6cea-4566-9092-619921a3a7b9",
+      "allocationChunkIdentifier": 0,
+      "amount": 1001.0,
+      "validFrom": "2020-04-23T03:22:00Z",
+      "validTo": "2028-04-22T03:22:00Z"
+    }
+  }
+}
+
 ```
