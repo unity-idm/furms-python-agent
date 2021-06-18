@@ -124,7 +124,7 @@ required arguments:
   }
 }
 ```
-## Alloation chunk update
+## Allocation chunk update
 The demo agent package comes with a separate command line tool to update particular allocation chunk.
 
 The `chunk-update.sh` tool requires site identifier and offers two commands to: 
