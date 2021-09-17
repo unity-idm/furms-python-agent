@@ -103,5 +103,13 @@ class RequestListeners:
         self.listeners[UserAllocationBlockAccessRequest.message_name()] = listener
         return self
 
+    def user_policy_acceptance_update_listener(self, listener: Callable[[UserPolicyAcceptanceUpdate, Header, SitePublisher], None]):
+        self.listeners[UserPolicyAcceptanceUpdate.message_name()] = listener
+        return self
+
+    def policy_update_listener(self, listener: Callable[[PolicyUpdate, Header, SitePublisher], None]):
+        self.listeners[PolicyUpdate.message_name()] = listener
+        return self
+
     def get(self, message: ProtocolMessage):
         return self.listeners.get(message.message_name(), lambda: None)

@@ -128,8 +128,9 @@ class ProjectInstallationRequest(ProtocolMessage):
 
 
 class ProjectInstallationResult(ProtocolMessage):
-    def __init__(self) -> None:
-        pass
+    def __init__(self, gid=None) -> None:
+        self.attributes = {}
+        self.attributes['gid'] = gid
 
 
 class ProjectRemovalRequestAck(ProtocolMessage):
@@ -253,6 +254,20 @@ class UserProjectRemovalResult(ProtocolMessage):
     def __init__(self) -> None:
         pass
 
+###################################################
+# Policy related messages
+###################################################
+class PolicyUpdate(ProtocolMessage):
+    def __init__(self, policyIdentifier, policyName, currentVersion, serviceIdentifier) -> None:
+        self.policyIdentifier = policyIdentifier
+        self.policyName = policyName
+        self.currentVersion = currentVersion
+        self.serviceIdentifier = serviceIdentifier
+
+class UserPolicyAcceptanceUpdate(ProtocolMessage):
+    def __init__(self, fenixUserId, policiesAcceptance) -> None:
+        self.fenixUserId = fenixUserId
+        self.policiesAcceptance = policiesAcceptance
 
 ###################################################
 # User allocation access messages
