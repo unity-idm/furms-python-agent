@@ -14,6 +14,7 @@ from ping_handler import PingHandler
 from user_allocation_access_handler import UserAllocationAccessHandler
 from demo_broker_config import DemoBrokerConfiguration
 from policy_handler import PolicyManagementHandler
+from user_status_handler import UserStatusHandler
 
 furms.set_stream_logger('furms.sitelistener', logging.DEBUG)
 furms.set_stream_logger('sshkey_handler', logging.INFO)
@@ -21,6 +22,7 @@ furms.set_stream_logger('project_handler', logging.INFO)
 furms.set_stream_logger('allocation_handler', logging.INFO)
 furms.set_stream_logger('user_allocation_access_handler', logging.INFO)
 furms.set_stream_logger('policy_handler', logging.INFO)
+furms.set_stream_logger('user_status_handler', logging.INFO)
 
 #########################################################
 # Entry point
@@ -63,6 +65,9 @@ listeners.user_remove_allocation_access_listener(user_access_handler.handle_remo
 policy_handler = PolicyManagementHandler()
 listeners.policy_update_listener(policy_handler.handle_policy_update)
 listeners.user_policy_acceptance_update_listener(policy_handler.handle_user_policy_acceptance_update)
+
+user_status_handler = UserStatusHandler()
+listeners.user_status_listener(user_status_handler.handle_user_status_change)
 
 try:
     brokerConfig = DemoBrokerConfiguration(siteId)

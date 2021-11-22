@@ -341,3 +341,21 @@ class ProtocolMessageFactory:
         protocol_message_name = next(iter(body))
         protocol_message_name_class = globals()[protocol_message_name]
         return protocol_message_name_class(**body[protocol_message_name])
+
+
+###################################################
+# Set user status messages
+###################################################
+class SetUserStatusRequest(ProtocolMessage):
+    def __init__(self, fenixUserId, status, reason) -> None:
+        self.fenixUserId = fenixUserId
+        self.status = status
+        self.reason = reason
+
+class SetUserStatusRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
+
+class SetUserStatusResult(ProtocolMessage):
+    def __init__(self) -> None:
+        pass

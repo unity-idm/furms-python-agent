@@ -111,5 +111,9 @@ class RequestListeners:
         self.listeners[PolicyUpdate.message_name()] = listener
         return self
 
+    def user_status_listener(self, listener: Callable[[SetUserStatusRequest, Header, SitePublisher], None]):
+        self.listeners[SetUserStatusRequest.message_name()] = listener
+        return self
+
     def get(self, message: ProtocolMessage):
         return self.listeners.get(message.message_name(), lambda: None)
