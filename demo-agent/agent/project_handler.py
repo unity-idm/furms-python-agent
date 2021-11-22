@@ -47,6 +47,7 @@ class ProjectsManagementHandler:
             return
         
         self.db.remove(Project.id == request.identifier)
+        sitePublisher.publish(Header.ok(header.messageCorrelationId), furms.ProjectRemovalRequestAck())
         sitePublisher.publish(Header.ok(header.messageCorrelationId), furms.ProjectRemovalResult())
         self._logger.info("Project removed, list of all projects: %s" % self.db.all())
 
