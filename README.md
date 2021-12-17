@@ -1,16 +1,19 @@
 # Preparation of virtual environment for demo agent
 
 ## Create virtual environment if not already
+
 ```
 python3 -m venv furms-agent-venv
 ```
 
 ## Activate virtual environment
+
 ```
 source furms-agent-venv/bin/activate
 ```
 
 ## Setup virtual environment if not already
+
 ```
 pip3 install -r requirements.txt
 ```
@@ -19,11 +22,13 @@ pip3 install -r requirements.txt
 The demo agent has been developed on top of the `furms` client library.
 Let's install it in our venv:
 ## Build your library
+
 ```
 python3 setup.py bdist_wheel
 ```
 
 ## Library installation steps
+
 ```
 pip3 install dist/furms-1.0.0-py3-none-any.whl
 ```
@@ -32,6 +37,7 @@ pip3 install dist/furms-1.0.0-py3-none-any.whl
 # Running demo agent
 The demo agent has been developed on top of the `furms` library and can be found in `demo-agent` directory.
 Configure credentials by setting the following environmental variables:
+
 ```
 export BROKER_HOST=<broker-host>
 export BROKER_PORT=<broker-port>
@@ -40,6 +46,7 @@ export BROKER_PASSWORD=<broker-password>
 export BROKER_VIRTUAL_HOST=<broker-virtual-hsot>
 export CA_FILE=<path to CA file in PEM format>
 ```
+
 If aforementioned variables are not present a default values takes place:
 * host - 127.0.0.1
 * port - 4444
@@ -48,6 +55,7 @@ If aforementioned variables are not present a default values takes place:
 * virtual host - "/"
 * exchange - "" - default amq exchange
 * cafile - ./ca_certificate.pem
+
 ```
 source furms-agent-venv/bin/activate # skip it if you already activated virtual env
 cd demo-agent
@@ -63,6 +71,7 @@ The `report-usage.sh` tool requires site identifier and offers two commands to:
 
 ### `list-allocations` command (alias: list)
 This command is used to show all allocations provisioned to given site. 
+
 ```
 cd demo-agent
 ./report-usage.sh --site SITE_ID list-allocations
@@ -86,11 +95,11 @@ List of all allocations for site with identifier: SITE_ID
         "validTo": "2024-08-12T05:32:00Z"
     }
 ]
-
 ```
 
 ### `publish-usage` command (alias: pub)
 This option is used to report consumption for given allocation and optionally fiven user.
+
 ```
 cd demo-agent
 ./report-usage.sh --site SITE_ID publish-usage --help
@@ -124,6 +133,7 @@ required arguments:
   }
 }
 ```
+
 ## Allocation chunk update
 The demo agent package comes with a separate command line tool to update particular allocation chunk.
 
@@ -133,6 +143,7 @@ The `chunk-update.sh` tool requires site identifier and offers two commands to:
 
 ### `list-chunks` command (alias: list)
 This command is used to show all chunks for given site. 
+
 ```
 cd demo-agent
 ./chunk-update.sh --site SITE_ID list-chunks
@@ -154,12 +165,13 @@ List of all chunks for site with identifier: SITE_ID
     }
 ```
 
-### `publish-update` command (alias: pub)
+### `update-chunk` command (alias: update)
 This option is used to publish chunk update.
+
 ```
 cd demo-agent
 ./chunk-update.sh -s SITE_ID publish-update --help
-usage: chunk-update.sh publish-update [-h] -a ALLOCATION_ID -c CHUNK_ID --amount AMOUNT [-f VALID_FROM] [-t VALID_TO]
+usage: chunk-update.sh update-chunk [-h] -a ALLOCATION_ID -c CHUNK_ID --amount AMOUNT [-f VALID_FROM] [-t VALID_TO]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -176,7 +188,7 @@ required arguments:
   --amount AMOUNT       chunk amount to be updated in FURMS
 
 
-./chunk-update.sh -s SITE_ID pub -a 16e51bd3-6cea-4566-9092-619921a3a7b9 -c 0 --amount 1001 -t 2028-04-22T03:22:00Z -f 2020-04-23T03:22:00Z
+./chunk-update.sh -s SITE_ID update -a 16e51bd3-6cea-4566-9092-619921a3a7b9 -c 0 --amount 1001 -t 2028-04-22T03:22:00Z -f 2020-04-23T03:22:00Z
 2021-06-18 12:06:04,635 furms.sitelistener [INFO] message published to SITE_ID-site-pub (exchange: 'SITE_ID-site-pub') payload:
 {
   "header": {
@@ -194,5 +206,10 @@ required arguments:
     }
   }
 }
-
 ```
+
+### `add-chunk` command (alias: add)
+This option is used to add a new allocation chunk to existing FURMS allocation. Usage is the same as update with two exceptions:
+
+* valid-from and valid-to parameters are mandatory
+* allocation id must be a new (unused) id

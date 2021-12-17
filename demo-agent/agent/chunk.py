@@ -16,7 +16,7 @@ class ProjectResourceAllocationUpdatePublisher:
         self.siteid = args.site
         self.record = self._create_update(args.allocation_id, args.chunk_id, args.amount, args.valid_from, args.valid_to)
 
-    def publish_to_furms(self):
+    def update(self):
         publisher = furms.SimpleSitePublisher(DemoBrokerConfiguration(self.siteid))
         header = furms.Header.ok(None)
         Chunk = Query()
@@ -42,9 +42,41 @@ class ProjectResourceAllocationUpdatePublisher:
             raise Exception("Unknown chunk alloc:%s, chunkId:%s for site %s (result:%s)" % (allocation_id, chunk_id, self.siteid, chunk))
         return chunk[0]
 
-def publish_usage_to_furms(args):
+class ProjectResourceAllocationAdder:
+    def __init__(self, args) -> None:
+        self.siteid = args.site
+        self.record = self._create_request(args.allocation_id, args.chunk_id, args.amount, args.valid_from, args.valid_to)
+
+    def add(self):
+        publisher = furms.SimpleSitePublisher(DemoBrokerConfiguration(self.siteid))
+        header = furms.Header.ok(None)
+        Storage(self.siteid).allocationChunksDB.insert(
+            {'allocId': self.record.allocationIdentifier,
+                        'chunkId': self.record.allocationChunkIdentifier,
+                        'amount': self.record.amount,
+                        'validFrom': self.record.validFrom,
+                        'validTo': self.record.validTo})
+        publisher.publish(header, self.record)
+
+    def _create_request(self, allocation_id, chunk_id, amount, valid_from, valid_to):
+        return furms.ProjectResourceAllocationResult(
+            allocation_id, 
+            chunk_id, 
+            amount, 
+            valid_from, 
+            valid_to)
+
+
+
+def publish_chunk_update_to_furms(args):
     publisher = ProjectResourceAllocationUpdatePublisher(args)
-    publisher.publish_to_furms()
+    publisher.update()
+
+
+def add_chunk(args):
+    publisher = ProjectResourceAllocationAdder(args)
+    publisher.add()
+
 
 def list_all_chunks(args):
     storage = Storage(args.site)
@@ -60,7 +92,7 @@ def parse_arguments():
 
     subparsers = parser.add_subparsers(title='commands', description='available commands', dest='cmd', required=True)
     
-    publish_update = subparsers.add_parser('publish-update', aliases=['pub'], help='publish chunk update to FURMS')
+    publish_update = subparsers.add_parser('update-chunk', aliases=['update'], help='update existing chunk')
     publish_update_required = publish_update.add_argument_group('required arguments')
     publish_update_required.add_argument('-a', '--allocation-id', type=str, help='allocation id', required=True)
     publish_update_required.add_argument('-c', '--chunk-id', type=int, help='chunk id', required=True)
@@ -70,7 +102,16 @@ def parse_arguments():
         if not provided then current provisioned value is taken', required=False)
     publish_update.add_argument('-t', '--valid-to', type=str, help='when provided then send in a protocol in validTo field, , \
         if not provided then current provisioned value is taken', required=False)
-    publish_update.set_defaults(func=publish_usage_to_furms)
+    publish_update.set_defaults(func=publish_chunk_update_to_furms)
+
+    add_chunk_opt = subparsers.add_parser('add-chunk', aliases=['add'], help='add new chunk to allocation')
+    add_chunk_required = add_chunk_opt.add_argument_group('required arguments')
+    add_chunk_required.add_argument('-a', '--allocation-id', type=str, help='allocation id', required=True)
+    add_chunk_required.add_argument('-c', '--chunk-id', type=int, help='chunk id', required=True)
+    add_chunk_required.add_argument('--amount', type=float, help='chunk amount', required=True)
+    add_chunk_required.add_argument('-f', '--valid-from', type=str, help='from when chunk is valid', required=True)
+    add_chunk_required.add_argument('-t', '--valid-to', type=str, help='to when chunk is valid', required=True)
+    add_chunk_opt.set_defaults(func=add_chunk)
 
     list_allocs = subparsers.add_parser('list-chunks', aliases=['list'], help='list all chunks')
     list_allocs.set_defaults(func=list_all_chunks)
