@@ -14,35 +14,38 @@ from tinydb import Query
 class ResourceUsagePublisher:
     def __init__(self, args) -> None:
         self.siteid = args.site
-        self.record = self._create_usage_record(args.fenix_user_id, args.allocation_id, args.cumulative_consumption)
+        self.record = self._create_usage_record(args.fenix_user_id, args.allocation_id, args.cumulative_consumption, 
+                                                args.timestamp)
 
     def publish_to_furms(self):
         publisher = furms.SimpleSitePublisher(DemoBrokerConfiguration(self.siteid))
         header = furms.Header.ok(None)
         publisher.publish(header, self.record)
 
-    def _create_usage_record(self, fenix_user_id, allocation_id, cumulative_consumption):
+    def _create_usage_record(self, fenix_user_id, allocation_id, cumulative_consumption, timestamp):
+        if not timestamp:
+            timestamp = self._utcnow()
         if fenix_user_id:
-            return self._create_user_resource_usage_record(fenix_user_id, allocation_id, cumulative_consumption)
+            return self._create_user_resource_usage_record(fenix_user_id, allocation_id, cumulative_consumption, timestamp)
         else:
-            return self._create_cumulative_resource_usage_record(allocation_id, cumulative_consumption)
+            return self._create_cumulative_resource_usage_record(allocation_id, cumulative_consumption, timestamp)
 
-    def _create_user_resource_usage_record(self, fenix_user_id, allocation_id, cumulative_consumption):
+    def _create_user_resource_usage_record(self, fenix_user_id, allocation_id, cumulative_consumption, timestamp):
         alloc = self._get_allocation(allocation_id)
         return furms.UserResourceUsageRecord(
             alloc['projectIdentifier'], 
             alloc['allocationIdentifier'], 
             fenix_user_id, 
             cumulative_consumption, 
-            self._utcnow())
+            timestamp)
 
-    def _create_cumulative_resource_usage_record(self, allocation_id, cumulative_consumption):
+    def _create_cumulative_resource_usage_record(self, allocation_id, cumulative_consumption, timestamp):
         alloc = self._get_allocation(allocation_id)
         return furms.CumulativeResourceUsageRecord(
             alloc['projectIdentifier'], 
             alloc['allocationIdentifier'], 
             cumulative_consumption, 
-            self._utcnow())
+            timestamp)
 
     def _get_allocation(self, allocation_id):
         storage = Storage(self.siteid)
@@ -79,6 +82,7 @@ def parse_arguments():
         as consumed', required=True)
     publish_usage_required.add_argument('-a', '--allocation-id', type=str, help='allocation id', required=True)
     publish_usage.add_argument('-u', '--fenix-user-id', type=str, help='when provided then only per-user record is sent', required=False)
+    publish_usage.add_argument('-t', '--timestamp', type=str, help='can be provided to set arbitrary time of the consumption report', required=False)
     publish_usage.set_defaults(func=publish_usage_to_furms)
 
     list_allocs = subparsers.add_parser('list-allocations', aliases=['list'], help='list of site allocations')
