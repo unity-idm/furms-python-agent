@@ -359,3 +359,13 @@ class SetUserStatusRequestAck(ProtocolMessage):
 class SetUserStatusResult(ProtocolMessage):
     def __init__(self) -> None:
         pass
+
+
+###################################################
+# Agent error message information
+###################################################
+class AgentMessageErrorInfo(ProtocolMessage):
+    def __init__(self, correlationId, errorType, description) -> None:
+        self.correlationId = correlationId
+        self.errorType = errorType
+        self.description = description

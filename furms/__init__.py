@@ -74,6 +74,8 @@ from furms.furms_messages import SetUserStatusRequest
 from furms.furms_messages import SetUserStatusRequestAck
 from furms.furms_messages import SetUserStatusResult
 
+from furms.furms_messages import AgentMessageErrorInfo
+
 __author__ = 'Bixbit s.c.'
 __version__ = '1.0.0'
 
