@@ -23,9 +23,9 @@ class TestUserAllocationAccess(unittest.TestCase):
         alloc_access_handler = UserAllocationAccessHandler(self.storage)
 
         header = Header("id-1", version=1)
-        request = UserAllocationGrantAccessRequest("allocId", "fenixUserId", "projectId")
+        request = UserAllocationGrantAccessRequest("allocId", {"fenixUserId": "userid"}, "projectId")
         publisher = FakePublisher()
-        self.storage.usersDB.insert({'fenixIdentifier': request.fenixUserId,
+        self.storage.usersDB.insert({'fenixIdentifier': "userid",
                         'project': request.projectIdentifier,
                         'name': "Senior",
                         'uid': "123"})
@@ -43,7 +43,7 @@ class TestUserAllocationAccess(unittest.TestCase):
         alloc_access_handler = UserAllocationAccessHandler(self.storage)
 
         header = Header("id-1", version=1)
-        request = UserAllocationGrantAccessRequest("allocId", "fenixUserId", "projectId")
+        request = UserAllocationGrantAccessRequest("allocId", {"fenixUserId": "userid"}, "projectId")
         publisher = FakePublisher()
 
         alloc_access_handler.handle_add_user_allocation_access(request, header, publisher)
@@ -56,9 +56,9 @@ class TestUserAllocationAccess(unittest.TestCase):
         alloc_access_handler = UserAllocationAccessHandler(self.storage)
 
         header = Header("id-1", version=1)
-        request = UserAllocationGrantAccessRequest("allocId", "fenixUserId", "projectId")
+        request = UserAllocationGrantAccessRequest("allocId", {"fenixUserId": "userid"}, "projectId")
         publisher = FakePublisher()
-        self.storage.usersDB.insert({'fenixIdentifier': request.fenixUserId,
+        self.storage.usersDB.insert({'fenixIdentifier': "userid",
                         'project': request.projectIdentifier,
                         'name': "Senior",
                         'uid': "123"})
@@ -73,7 +73,7 @@ class TestUserAllocationAccess(unittest.TestCase):
         alloc_access_handler = UserAllocationAccessHandler(self.storage)
 
         header = Header("id-1", version=1)
-        request = UserAllocationBlockAccessRequest("allocId", "fenixUserId", "projectId")
+        request = UserAllocationBlockAccessRequest("allocId", {"fenixUserId": "userid"}, "projectId")
         publisher = FakePublisher()
         self.storage.usersAccessDB.insert({
             'allocationIdentifier': request.allocationIdentifier,

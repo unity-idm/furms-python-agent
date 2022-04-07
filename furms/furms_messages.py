@@ -264,6 +264,7 @@ class PolicyUpdate(ProtocolMessage):
         self.currentVersion = currentVersion
         self.serviceIdentifier = serviceIdentifier
 
+
 class UserPolicyAcceptanceUpdate(ProtocolMessage):
     def __init__(self, fenixUserId, policiesAcceptance) -> None:
         self.fenixUserId = fenixUserId
@@ -278,9 +279,9 @@ class UserAllocationGrantAccessRequestAck(ProtocolMessage):
 
 
 class UserAllocationGrantAccessRequest(ProtocolMessage):
-    def __init__(self, allocationIdentifier, fenixUserId, projectIdentifier) -> None:
+    def __init__(self, allocationIdentifier, user, projectIdentifier) -> None:
         self.allocationIdentifier = allocationIdentifier
-        self.fenixUserId = fenixUserId
+        self.user = user
         self.projectIdentifier = projectIdentifier
 
 

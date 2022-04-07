@@ -23,7 +23,7 @@ class UserAllocationAccessHandler:
     def handle_add_user_allocation_access(self, request: furms.UserAllocationGrantAccessRequest, header: furms.Header,
                                           sitePublisher: furms.SitePublisher) -> None:
         User = Query()
-        user = self.usersDB.search(User.fenixIdentifier == request.fenixUserId)
+        user = self.usersDB.search(User.fenixIdentifier == request.user['fenixUserId'])
         Allocation = Query()
         alloc = self.allocationsDB.search(Allocation.allocationIdentifier == request.allocationIdentifier)
 
@@ -44,7 +44,7 @@ class UserAllocationAccessHandler:
         self.db.insert({
             'allocationIdentifier': request.allocationIdentifier,
             'projectIdentifier': request.projectIdentifier,
-            'fenixUserId': request.fenixUserId
+            'fenixUserId': request.user['fenixUserId']
         })
         sitePublisher.publish(Header.ok(header.messageCorrelationId), furms.UserAllocationGrantAccessResult())
         self._logger.info("Resource access added, all allocation grants: %s" % self.db.all())
