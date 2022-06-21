@@ -114,7 +114,7 @@ class RequestListeners:
     def user_status_listener(self, listener: Callable[[SetUserStatusRequest, Header, SitePublisher], None]):
         self.listeners[SetUserStatusRequest.message_name()] = listener
 
-    def user_status_listener(self, listener: Callable[[AgentMessageErrorInfo, Header, SitePublisher], None]):
+    def agent_errors_listener(self, listener: Callable[[AgentMessageErrorInfo, Header, SitePublisher], None]):
         self.listeners[AgentMessageErrorInfo.message_name()] = listener
         return self
 

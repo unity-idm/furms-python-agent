@@ -72,7 +72,7 @@ user_status_handler = UserStatusHandler()
 listeners.user_status_listener(user_status_handler.handle_user_status_change)
 
 agent_error_handler = AgentErrorHandler()
-listeners.user_status_listener(agent_error_handler.handle)
+listeners.agent_errors_listener(agent_error_handler.handle)
 
 try:
     brokerConfig = DemoBrokerConfiguration(siteId)
