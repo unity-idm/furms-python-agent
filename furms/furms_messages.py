@@ -176,7 +176,10 @@ class ProjectUpdateResult(ProtocolMessage):
 class ProjectResourceAllocationRequestAck(ProtocolMessage):
     def __init__(self) -> None:
         pass
-
+    
+class ProjectResourceAllocationStatusResult(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
 
 class ProjectResourceAllocationRequest(ProtocolMessage):
     def __init__(self, projectIdentifier, allocationIdentifier, resourceCreditIdentifier, resourceType, amount,

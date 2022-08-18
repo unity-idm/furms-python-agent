@@ -4,8 +4,9 @@
 import furms
 import logging
 import datetime
+import time
 from storage import Storage
-from furms import Header, ProjectResourceAllocationRequestAck, ProjectResourceAllocationResult, ProjectResourceAllocationRequest
+from furms import Header, ProjectResourceAllocationRequestAck, ProjectResourceAllocationResult, ProjectResourceAllocationRequest, ProjectResourceAllocationStatusResult
 from tinydb import TinyDB, Query
 
 
@@ -27,7 +28,7 @@ class ResourceAllocationHandler:
     def handle_allocation_add(self, request: ProjectResourceAllocationRequest, header: Header, sitePublisher: furms.SitePublisher) -> None:
         if request.amount >= 1000:
             sitePublisher.publish(Header.error(header.messageCorrelationId, "allocation_too_large", "We are a demo site..."),
-                                  ProjectResourceAllocationRequestAck())
+                                  ProjectResourceAllocationStatusResult())
             return
 
         if request.amount >= 100:
@@ -48,6 +49,9 @@ class ResourceAllocationHandler:
 
     def _handle_small_alloc(self, request: ProjectResourceAllocationRequest, header: Header, sitePublisher: furms.SitePublisher):
         sitePublisher.publish(Header.ok(header.messageCorrelationId), ProjectResourceAllocationRequestAck())
+        time.sleep(5)
+        sitePublisher.publish(Header.ok(header.messageCorrelationId), ProjectResourceAllocationStatusResult())
+
         self._store_alloc(request)
         allocResult = ProjectResourceAllocationResult(request.allocationIdentifier, self.allocChunkId,
                                                       request.amount, request.validFrom, request.validTo)
@@ -56,6 +60,7 @@ class ResourceAllocationHandler:
 
     def _handle_medium_alloc(self, request: ProjectResourceAllocationRequest, header: Header, sitePublisher: furms.SitePublisher):
         sitePublisher.publish(Header.ok(header.messageCorrelationId), ProjectResourceAllocationRequestAck())
+        sitePublisher.publish(Header.ok(header.messageCorrelationId), ProjectResourceAllocationStatusResult())
 
         self._store_alloc(request)
         allocStart = datetime.datetime.strptime(request.validFrom, '%Y-%m-%dT%H:%M:%SZ')

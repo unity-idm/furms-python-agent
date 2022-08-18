@@ -42,6 +42,7 @@ from furms.furms_messages import ProjectUpdateResult
 
 from furms.furms_messages import ProjectResourceAllocationRequest
 from furms.furms_messages import ProjectResourceAllocationRequestAck
+from furms.furms_messages import ProjectResourceAllocationStatusResult
 from furms.furms_messages import ProjectResourceAllocationResult
 from furms.furms_messages import ProjectResourceAllocationUpdate
 
