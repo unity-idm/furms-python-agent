@@ -267,11 +267,18 @@ class PolicyUpdate(ProtocolMessage):
         self.currentVersion = currentVersion
         self.serviceIdentifier = serviceIdentifier
 
+class PolicyUpdateAck(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
 
 class UserPolicyAcceptanceUpdate(ProtocolMessage):
     def __init__(self, fenixUserId, policiesAcceptance) -> None:
         self.fenixUserId = fenixUserId
         self.policiesAcceptance = policiesAcceptance
+
+class UserPolicyAcceptanceUpdateAck(ProtocolMessage):
+    def __init__(self) -> None:
+        pass
 
 ###################################################
 # User allocation access messages
