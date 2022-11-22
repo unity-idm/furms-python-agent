@@ -73,7 +73,7 @@ class SiteListener(SimpleSitePublisher):
         try:
             listener(payload.body, payload.header, self)
         except Exception as e:
-            logger.error("Failed to handle FURMS request", e)
+            logger.error("Failed to handle FURMS request: %s", e)
 
 
 
