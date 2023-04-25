@@ -380,3 +380,35 @@ class AgentMessageErrorInfo(ProtocolMessage):
         self.correlationId = correlationId
         self.errorType = errorType
         self.description = description
+
+
+###################################################
+# Community provisioning messages
+###################################################
+class CommunityInstallationRequest(ProtocolMessage):
+    def __init__(self, identifier, name, description) -> None:
+        self.identifier = identifier
+        self.name = name
+        self.description = description
+
+class CommunityInstallationRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        None
+
+class CommunityUpdateRequest(ProtocolMessage):
+    def __init__(self, identifier, name, description) -> None:
+        self.identifier = identifier
+        self.name = name
+        self.description = description
+
+class CommunityUpdateRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        None
+
+class CommunityRemovalRequest(ProtocolMessage):
+    def __init__(self, identifier) -> None:
+        self.identifier = identifier
+
+class CommunityRemovalRequestAck(ProtocolMessage):
+    def __init__(self) -> None:
+        None

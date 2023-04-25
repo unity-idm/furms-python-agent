@@ -79,6 +79,14 @@ from furms.furms_messages import SetUserStatusResult
 
 from furms.furms_messages import AgentMessageErrorInfo
 
+from furms.furms_messages import CommunityInstallationRequest
+from furms.furms_messages import CommunityInstallationRequestAck
+from furms.furms_messages import CommunityUpdateRequest
+from furms.furms_messages import CommunityUpdateRequestAck
+from furms.furms_messages import CommunityRemovalRequest
+from furms.furms_messages import CommunityRemovalRequestAck
+
+
 __author__ = 'Bixbit s.c.'
 __version__ = '1.0.0'
 

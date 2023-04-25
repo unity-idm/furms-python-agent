@@ -16,6 +16,7 @@ from demo_broker_config import DemoBrokerConfiguration
 from policy_handler import PolicyManagementHandler
 from user_status_handler import UserStatusHandler
 from agent_error_handler import AgentErrorHandler
+from community_handler import CommunityManagementHandler
 
 furms.set_stream_logger('furms.sitelistener', logging.DEBUG)
 furms.set_stream_logger('sshkey_handler', logging.INFO)
@@ -25,6 +26,7 @@ furms.set_stream_logger('user_allocation_access_handler', logging.INFO)
 furms.set_stream_logger('policy_handler', logging.INFO)
 furms.set_stream_logger('user_status_handler', logging.INFO)
 furms.set_stream_logger('agent_error_handler', logging.INFO)
+furms.set_stream_logger('community_handler', logging.INFO)
 
 #########################################################
 # Entry point
@@ -73,6 +75,11 @@ listeners.user_status_listener(user_status_handler.handle_user_status_change)
 
 agent_error_handler = AgentErrorHandler()
 listeners.agent_errors_listener(agent_error_handler.handle)
+
+community_handler = CommunityManagementHandler()
+listeners.community_add_listener(community_handler.handle_community_add)
+listeners.community_remove_listener(community_handler.handle_community_remove)
+listeners.community_update_listener(community_handler.handle_community_update)
 
 try:
     brokerConfig = DemoBrokerConfiguration(siteId)

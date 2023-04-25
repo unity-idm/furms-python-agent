@@ -118,5 +118,17 @@ class RequestListeners:
         self.listeners[AgentMessageErrorInfo.message_name()] = listener
         return self
 
+    def community_add_listener(self, listener: Callable[[CommunityInstallationRequest, Header, SitePublisher], None]):
+        self.listeners[CommunityInstallationRequest.message_name()] = listener
+        return self
+
+    def community_remove_listener(self, listener: Callable[[CommunityRemovalRequest, Header, SitePublisher], None]):
+        self.listeners[CommunityRemovalRequest.message_name()] = listener
+        return self
+
+    def community_update_listener(self, listener: Callable[[CommunityUpdateRequest, Header, SitePublisher], None]):
+        self.listeners[CommunityUpdateRequest.message_name()] = listener
+        return self
+
     def get(self, message: ProtocolMessage):
         return self.listeners.get(message.message_name(), lambda: None)
